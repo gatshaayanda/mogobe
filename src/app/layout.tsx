@@ -11,12 +11,6 @@ export const viewport:Viewport={themeColor:"#922a2b",colorScheme:"light"};
 export default async function RootLayout({children}:{children:React.ReactNode}){
  const requestHeaders=await headers();
  const userAgent=requestHeaders.get("user-agent")||"";
- const requestedWith=requestHeaders.get("x-requested-with")||"";
- // A social referrer does not prove this browser is embedded: Chrome opened from WhatsApp
- // must not be trapped in the in-app-browser install gate.
- const embedded=EMBEDDED_BROWSER_PATTERN.test(userAgent)
-   || (/Android/i.test(userAgent)&&/\bwv\b/i.test(userAgent))
-   || /^(com\.whatsapp|com\.instagram\.android|com\.facebook\.katana|com\.facebook\.lite|com\.facebook\.orca)$/i.test(requestedWith);
  const android=/Android/i.test(userAgent);
  return <html lang="en"><body><Script id="theplug-early-install-capture" strategy="beforeInteractive">{`
 (function () {
