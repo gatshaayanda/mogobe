@@ -15,7 +15,6 @@ type InstallPromptEvent = Event & {
 type InstallState = "hidden" | "native" | "embedded";
 
 const INSTALL_DISMISSED_KEY = "mogobe:install:dismissed-at";
-const INSTALL_DISMISS_MS = 7 * 24 * 60 * 60 * 1000;
 
 function environment() {
   if (typeof window === "undefined") return { standalone: true, ios: false, android: false, embedded: false };
