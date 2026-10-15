@@ -125,13 +125,13 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
 
     window.addEventListener("online", online);
     window.addEventListener("offline", off);
-    const promptWindow = window as Window & { __thePlugInstallPrompt?: Event; __thePlugPwaListenerReady?: boolean };
+    const promptWindow = window as Window & { __mogobeInstallPrompt?: Event; __mogobePwaListenerReady?: boolean };
     // The browser can emit beforeinstallprompt before React hydrates. Adopt the
     // event captured by the tiny beforeInteractive script before listening normally.
-    promptWindow.__thePlugPwaListenerReady = true;
-    const earlyPrompt = promptWindow.__thePlugInstallPrompt;
+    promptWindow.__mogobePwaListenerReady = true;
+    const earlyPrompt = promptWindow.__mogobeInstallPrompt;
     if (earlyPrompt) {
-      delete promptWindow.__thePlugInstallPrompt;
+      delete promptWindow.__mogobeInstallPrompt;
       onBeforeInstallPrompt(earlyPrompt);
     }
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
@@ -168,7 +168,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       setInstallState("hidden");
       clearDismissal();
     };
-    window.addEventListener("theplug-open-install", requestInstall);
+    window.addEventListener("mogobe-open-install", requestInstall);
     window.addEventListener("appinstalled", appInstalled);
 
     let registration: ServiceWorkerRegistration | null = null;
@@ -197,7 +197,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     navigator.serviceWorker?.addEventListener("controllerchange", controllerChange);
 
     return () => {
-      window.removeEventListener("theplug-open-install", requestInstall);
+      window.removeEventListener("mogobe-open-install", requestInstall);
       window.removeEventListener("appinstalled", appInstalled);
       window.removeEventListener("online", online);
       window.removeEventListener("offline", off);
@@ -214,7 +214,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     const previousOverflow = document.body.style.overflow;
     if (isEmbeddedGate) document.body.style.overflow = "hidden";
     if (installState === "embedded") embeddedActionRef.current?.focus();
-    else document.querySelector<HTMLButtonElement>(".plugInstallPrimary")?.focus();
+    else document.querySelector<HTMLButtonElement>(".mogobeInstallPrimary")?.focus();
 
     const keepDialogFocused = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -299,13 +299,13 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const embeddedInstallStyle: CSSProperties = { position: "fixed", inset: 0, zIndex: 2147483647, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "rgba(0,0,0,.82)", backdropFilter: "blur(4px)", overscrollBehavior: "contain" };
   const installCard = installState === "native" ? (
     <div style={installShellStyle} role="presentation">
-      <section className="plugInstallModal" role="dialog" aria-modal="false" aria-labelledby="plug-install-title" aria-describedby="plug-install-message">
-        <div className="plugInstallTop"><span className="plugInstallMark">M</span><span className="plugInstallTag">MOGOBE BUTCHERY · BOTSWANA</span><button type="button" className="plugInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
-        <div className="plugInstallKicker">YOUR BUTCHERY APP</div>
-        <h2 id="plug-install-title">Mogobe Butchery.<br/><em>One tap away.</em></h2>
-        <p id="plug-install-message">Install Mogobe Butchery on your device for a direct home-screen shortcut to your basket, orders and updates from Mogobe.</p>
+      <section className="mogobeInstallModal" role="dialog" aria-modal="false" aria-labelledby="mogobe-install-title" aria-describedby="mogobe-install-message">
+        <div className="mogobeInstallTop"><span className="mogobeInstallMark">M</span><span className="mogobeInstallTag">MOGOBE BUTCHERY · BOTSWANA</span><button type="button" className="mogobeInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
+        <div className="mogobeInstallKicker">YOUR BUTCHERY APP</div>
+        <h2 id="mogobe-install-title">Mogobe Butchery.<br/><em>One tap away.</em></h2>
+        <p id="mogobe-install-message">Install Mogobe Butchery on your device for a direct home-screen shortcut to your basket, orders and updates from Mogobe.</p>
         {installHelpOpen ? (
-          <div className="plugInstallSteps" role="status" aria-live="polite">
+          <div className="mogobeInstallSteps" role="status" aria-live="polite">
             {installPlatform === "ios" ? (
               <>
                 <strong>Add Mogobe Butchery from Safari</strong>
@@ -322,16 +322,16 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
                 <p>In Chrome or Edge, open the browser menu and choose <b>Install Mogobe Butchery</b> or <b>Install page as app</b>, if offered.</p>
               </>
             )}
-            <button type="button" className="plugInstallPrimary" onClick={dismissInstall}>Got it</button>
+            <button type="button" className="mogobeInstallPrimary" onClick={dismissInstall}>Got it</button>
           </div>
         ) : (
           <>
-            <div className="plugInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open Mogobe Butchery from your home screen.</small></span><span><b>02</b><strong>Your orders</strong><small>Return to your basket and order updates.</small></span><span><b>03</b><strong>Easy to return</strong><small>Keep Mogobe close on your home screen.</small></span></div>
-            <button type="button" className="plugInstallPrimary" onClick={() => void install()}>Install Mogobe Butchery →</button>
-            <button type="button" className="plugInstallSecondary" onClick={dismissInstall}>Not now</button>
+            <div className="mogobeInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open Mogobe Butchery from your home screen.</small></span><span><b>02</b><strong>Your orders</strong><small>Return to your basket and order updates.</small></span><span><b>03</b><strong>Easy to return</strong><small>Keep Mogobe close on your home screen.</small></span></div>
+            <button type="button" className="mogobeInstallPrimary" onClick={() => void install()}>Install Mogobe Butchery →</button>
+            <button type="button" className="mogobeInstallSecondary" onClick={dismissInstall}>Not now</button>
           </>
         )}
-        <p className="plugInstallFootnote">No app-store search needed. Your browser will guide the installation.</p>
+        <p className="mogobeInstallFootnote">No app-store search needed. Your browser will guide the installation.</p>
       </section>
     </div>
   ) : installState === "embedded" ? (
