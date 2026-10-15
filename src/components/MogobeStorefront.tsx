@@ -43,7 +43,7 @@ export default function MogobeStorefront() {
     <div className="mogobeTopline"><span>AFRICAN MALL · UNIT 6 · GABORONE</span><span>MON–SAT · 08:00–18:00</span></div>
     <header className="mogobeHeader">
       <Link href="/" className="mogobeWordmark" aria-label="Mogobe Butchery home"><span className="mogobeBrandIcon">M</span><span><strong>MOGOBE</strong><small>BUTCHERY · GABORONE</small></span></Link>
-      <nav aria-label="Main navigation"><Link href="#shop">Shop meat</Link><Link href="#how-it-works">How it works</Link></nav>
+      <nav aria-label="Main navigation"><Link href="#shop">Shop meat</Link><Link href="#how-it-works">How it works</Link><Link href="/community">Community</Link><Link href="/account">My account</Link></nav>
       <Link href="/basket" className="mogobeBasketLink">Basket <span>{cartCount}</span></Link>
     </header>
 
