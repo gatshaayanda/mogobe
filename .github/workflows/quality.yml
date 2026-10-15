@@ -1,4 +1,4 @@
-name: The Plug quality
+name: Mogobe quality checks
 on:
   push:
     branches: [main]
