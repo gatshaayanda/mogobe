@@ -6,7 +6,7 @@ importScripts(
 
 let thePlugMessaging = null;
 try {
-  const config = self.__THE_PLUG_FIREBASE_CONFIG__;
+  const config = self.__MOGOBE_FIREBASE_CONFIG__;
   if (config && config.apiKey && config.projectId && config.messagingSenderId && config.appId) {
     firebase.initializeApp(config);
     thePlugMessaging = firebase.messaging();
@@ -14,20 +14,20 @@ try {
       // Notification payloads are displayed automatically by Firebase. Only render
       // data-only pushes here to avoid showing the same notification twice.
       if (payload.notification) return;
-      const title = payload.data?.title || "The Plug update";
+      const title = payload.data?.title || "Mogobe Butchery update";
       const options = {
-        body: payload.data?.body || "Open The Plug to check your latest account information.",
-        icon: "/plug-icon.svg",
-        badge: "/plug-icon.svg",
+        body: payload.data?.body || "Open Mogobe Butchery to check your latest account information.",
+        icon: "/mogobe-icon.svg",
+        badge: "/mogobe-icon.svg",
         data: { link: payload.data?.link || "/account" },
       };
       self.registration.showNotification(title, options);
     });
   } else {
-    console.error("The Plug Firebase Messaging web config is incomplete.");
+    console.error("Mogobe Butchery Firebase Messaging web config is incomplete.");
   }
 } catch (error) {
-  console.error("The Plug Firebase Messaging service worker could not initialize.", error);
+  console.error("Mogobe Butchery Firebase Messaging service worker could not initialize.", error);
 }
 
 self.addEventListener("notificationclick", (event) => {
@@ -45,12 +45,12 @@ self.addEventListener("notificationclick", (event) => {
   }));
 });
 
-const CACHE_VERSION = "theplug-shell-v15";
-const MEDIA_CACHE = "theplug-media-v1";
+const CACHE_VERSION = "mogobe-shell-v1";
+const MEDIA_CACHE = "mogobe-media-v1";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
 const PUBLIC_PAGE_LIMIT = 12;
-const APP_SHELL = ["/", "/request", "/offline", "/plug-icon.svg", "/manifest.webmanifest"];
+const APP_SHELL = ["/", "/basket", "/checkout", "/offline", "/mogobe-icon.svg", "/manifest.webmanifest"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
@@ -91,7 +91,7 @@ self.addEventListener("message", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => (key.startsWith("theplug-shell-") && key !== SHELL_CACHE) || (key.startsWith("theplug-media-") && key !== MEDIA_CACHE)).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => (key.startsWith("mogobe-shell-") && key !== SHELL_CACHE) || (key.startsWith("mogobe-media-") && key !== MEDIA_CACHE)).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
@@ -103,7 +103,7 @@ self.addEventListener("fetch", event => {
   if (url.pathname.startsWith("/api/")) return;
 
   const isNavigation = request.mode === "navigate" || request.headers.get("accept")?.includes("text/html");
-  const isPrivate = /^\/(?:account|requests|orders|admin|invite)(?:\/|$)/.test(url.pathname);
+  const isPrivate = /^\/(?:account|requests|orders|admin|invite|basket|checkout)(?:\/|$)/.test(url.pathname);
 
   // Private/member routes are network-only. Never serve a cached account/request page as
   // a substitute for a different route or when the authenticated page cannot be fetched.
