@@ -11,7 +11,7 @@ Use VS Code Git Bash, install the locked dependencies with `npm ci`, then run `n
 ## Project sequence
 
 1. Customer shopping and checkout.
-2. Admin product CRUD with image upload and order review.
-3. Customer accounts, loyalty/specials and moderated meat/recipe community.
+2. Admin product CRUD, availability controls and order review (image URLs supported; upload-provider setup still needs verification).
+3. Customer account improvements, loyalty/specials and moderated meat/recipe community.
 
 Read `AGENTS.md` and `CLONING.md` before implementation.
