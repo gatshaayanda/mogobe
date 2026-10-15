@@ -15,9 +15,9 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "en",
     categories: ["shopping", "food"],
     prefer_related_applications: false,
-    icons: [{ src: "/mogobe-icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
+    icons: [{ src: "/mogobe-icon-192", sizes: "192x192", type: "image/png", purpose: "any" }, { src: "/mogobe-icon-512", sizes: "512x512", type: "image/png", purpose: "any maskable" }],
     shortcuts: [
-      { name: "Shop meat", short_name: "Shop", description: "Browse the Mogobe counter", url: "/#shop", icons: [{ src: "/mogobe-icon.svg", sizes: "any", type: "image/svg+xml" }] },
+      { name: "Shop meat", short_name: "Shop", description: "Browse the Mogobe counter", url: "/#shop", icons: [{ src: "/mogobe-icon-192", sizes: "192x192", type: "image/png" }] },
       { name: "Your basket", short_name: "Basket", description: "Review your selection", url: "/basket", icons: [{ src: "/mogobe-icon.svg", sizes: "any", type: "image/svg+xml" }] }
     ]
   };
