@@ -77,7 +77,7 @@ export default function MogobeAdminDashboard() {
   async function saveProduct(event:React.FormEvent<HTMLFormElement>){
     event.preventDefault();setErrors("");setNotice("");
     const name=draft.name.trim(),category=draft.category.trim();
-    if(!name||!category||!Number.isFinite(draft.price)||draft.price<0){setErrors("Enter a product name, category and valid non-negative price.");return;}
+    if(!name||!category||!Number.isFinite(draft.price)||draft.price<0){setErrors("Enter a product name, category and valid non-negative price.");return;}if(draft.specialPrice!==undefined&&(!Number.isFinite(draft.specialPrice)||draft.specialPrice<0||draft.specialPrice>=draft.price)){setErrors("A special price must be lower than the normal price.");return;}if(draft.specialStartsAt&&draft.specialEndsAt&&new Date(draft.specialEndsAt).getTime()<new Date(draft.specialStartsAt).getTime()){setErrors("The special end time must be after its start time.");return;}
     setSaving(true);
     const now=new Date().toISOString();
     const data: Record<string, unknown> = {...draft,name,category,description:draft.description.trim(),imageUrl:draft.imageUrl.trim()||"/mogobe-meat-placeholder.svg",updatedAt:now,...(editing?{}:{createdAt:now})};
