@@ -4,6 +4,9 @@ import path from "node:path";
 const root = process.cwd();
 const forbiddenText = [
   /\bboemo\b/i,
+  /the[ -]?plug/i,
+  /theplug/i,
+  /plug-icon/i,
   /meating[ -]?place/i,
   /namane[ -]?tyres/i,
   /atlas[ -]?service[ -]?centre/i,
@@ -16,7 +19,7 @@ const forbiddenText = [
   /#00E5FF/i
 ];
 const ignoredDirs = new Set([".git", "node_modules", ".next", "coverage"]);
-const ignoredFiles = new Set(["AGENTS.md", "scripts/verify-identity.mjs", "docs/PWA-FOUNDATION.md"]);
+const ignoredFiles = new Set(["AGENTS.md", "CLONING.md", "scripts/verify-identity.mjs", "docs/PWA-FOUNDATION.md"]);
 const textExtensions = new Set([".ts", ".tsx", ".js", ".mjs", ".css", ".json", ".webmanifest", ".md", ".yml", ".yaml", ".txt", ".html", ".svg"]);
 
 function walk(dir) {
