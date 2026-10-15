@@ -225,7 +225,7 @@ h1 em{font-style:normal;color:var(--legacy-plug-blue);text-shadow:0 0 22px rgba(
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 
-/* The Plug install-first experience: branded, product-led, responsive. */
+/* Mogobe Butchery install-first experience: branded, product-led, responsive. */
 .plugInstallLanding{--legacy-plug-blue:#0866ff;--legacy-plug-red:#ed1c24}
 .plugInstallLanding .plugNotice a{color:#fff;text-decoration:none;font-weight:900}
 .plugInstallLanding .plugNavInner{gap:20px}
@@ -351,7 +351,7 @@ h1 em{font-style:normal;color:var(--legacy-plug-blue);text-shadow:0 0 22px rgba(
  .plugInstallLanding .plugButton:hover,.plugInstallBenefitGrid article:hover{transform:none}
 }
 
-/* Branded install invitation — The Plug owns the story, the browser owns final consent. */
+/* Branded install invitation — Mogobe Butchery owns the story, the browser owns final consent. */
 .plugInstallModal{position:relative;width:min(100%,500px);max-height:min(92dvh,860px);overflow:auto;padding:26px;border-radius:25px;background:#fff;color:#111;box-shadow:0 28px 90px rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.75);animation:plugInstallEnter .24s ease-out}
 .plugInstallModal:before{content:"";position:absolute;inset:0 0 auto;height:6px;background:linear-gradient(90deg,#0866ff 0 72%,#ed1c24 72% 100%)}
 .plugInstallTop{display:flex;align-items:center;gap:10px;margin:2px 0 28px}
@@ -382,7 +382,7 @@ h1 em{font-style:normal;color:var(--legacy-plug-blue);text-shadow:0 0 22px rgba(
 @media(prefers-reduced-motion:reduce){.plugInstallModal{animation:none}}
 
 
-/* The Plug storefront hierarchy: own finds/deals first, external discovery last. */
+/* Mogobe Butchery storefront hierarchy: own finds/deals first, external discovery last. */
 .plugTextLink,.plugCatalogueFallback{position:relative;display:inline-block;margin-top:14px;color:#0866ff;font-size:.84rem;font-weight:900;text-decoration:none}
 .plugTextLink:hover,.plugCatalogueFallback:hover{text-decoration:underline}
 .plugDealEmpty{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:26px;margin-top:24px;padding:30px;border:1px solid #e5e7eb;border-radius:20px;background:linear-gradient(135deg,#fff,#f7f8fb)}
@@ -599,7 +599,7 @@ button.plugProductAction{width:100%;align-items:center;background:transparent;bo
 @media(prefers-reduced-motion:reduce){.plugLoadingStatePulse,.plugLoadingStateTrack span{animation:none}.plugLoadingStateTrack span{left:0;width:100%}}
 
 
-/* The Plug member band: hard contrast guarantees for the actual editorial homepage. */
+/* Mogobe Butchery member band: hard contrast guarantees for the actual editorial homepage. */
 .plugEditorialHome .plugMemberLoop{background:#101010!important;color:#f5f5f5!important}
 .plugEditorialHome .plugMemberLoopHead h2{color:#f5f5f5!important}
 .plugEditorialHome .plugMemberLoopHead h2 em{color:#c8dcff!important}
