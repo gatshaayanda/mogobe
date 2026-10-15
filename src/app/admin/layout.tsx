@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Operations",
+export const metadata = {
+  title: "Mogobe Admin",
   robots: { index: false, follow: false },
 };
 
-export default function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return children;
+export default function AdminLayout() {
+  // The inherited source admin must stay inaccessible until Mogobe's own admin is implemented.
+  redirect("/");
 }
