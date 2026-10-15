@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
-import { db } from "@/lib/firebase/client";
+import { auth, db } from "@/lib/firebase/client";
+import { uploadFiles } from "@/lib/uploadthing";
 import { money, type MogobeProduct } from "@/lib/mogobe/catalogue";
 
 type Order = { id: string; customerName?: string; phone?: string; mode?: string; scheduledFor?: string; deliveryLocation?: string; instructions?: string; items?: Array<{name?:string;quantity?:number;unit?:string;price?:number}>; total?: number; status?: string; createdAt?: string };
@@ -23,6 +24,7 @@ export default function MogobeAdminDashboard() {
   const [errors,setErrors]=useState("");
   const [notice,setNotice]=useState("");
   const [saving,setSaving]=useState(false);
+  const [uploadingImage,setUploadingImage]=useState(false);
 
   useEffect(()=>{
     const stopProducts=onSnapshot(collection(db,"products"),snapshot=>{
@@ -42,6 +44,30 @@ export default function MogobeAdminDashboard() {
 
   function startEdit(product:MogobeProduct){setEditing(product.id);setDraft({name:product.name,category:product.category,description:product.description,price:product.price,unit:product.unit,imageUrl:product.imageUrl,available:product.available,sortOrder:product.sortOrder});setErrors("");setNotice("");}
   function resetDraft(){setEditing(null);setDraft(emptyDraft);}
+
+  async function uploadProductImage(file: File) {
+    setErrors(""); setNotice("");
+    if (!file.type.startsWith("image/")) { setErrors("Choose an image file."); return; }
+    if (file.size > 4 * 1024 * 1024) { setErrors("Choose an image smaller than 4 MB."); return; }
+    const user = auth.currentUser;
+    if (!user) { setErrors("Your admin session has expired. Sign in again before uploading."); return; }
+    setUploadingImage(true);
+    try {
+      const token = await user.getIdToken();
+      const uploaded = await uploadFiles("fileUploader", {
+        files: [file],
+        headers: { Authorization: "Bearer " + token },
+      });
+      const imageUrl = uploaded[0]?.url;
+      if (!imageUrl) throw new Error("The upload completed without returning an image URL.");
+      setField("imageUrl", imageUrl);
+      setNotice("Image uploaded. Save the product to publish this image.");
+    } catch (error) {
+      setErrors(error instanceof Error ? error.message : "Image upload failed. Check the upload service configuration and try again.");
+    } finally {
+      setUploadingImage(false);
+    }
+  }
 
   async function saveProduct(event:React.FormEvent<HTMLFormElement>){
     event.preventDefault();setErrors("");setNotice("");
@@ -83,7 +109,7 @@ export default function MogobeAdminDashboard() {
     {tab==="orders" ? <section className="mogobeAdminSection"><div className="mogobeAdminSectionTitle"><div><span className="mogobeAdminEyebrow">CUSTOMER REQUESTS</span><h2>Orders to look after</h2></div><p>Requests stay unconfirmed until you explicitly accept them.</p></div>
       {loadingOrders?<p className="mogobeAdminEmpty">Loading order requests…</p>:orders.length===0?<div className="mogobeAdminEmpty"><strong>You&apos;re all caught up.</strong><p>New customer requests will appear here when submitted.</p></div>:<div className="mogobeOrderList">{orders.map(order=><article className="mogobeOrderCard" key={order.id}><div className="mogobeOrderTop"><div><span className="mogobeAdminEyebrow">ORDER · {order.id.slice(0,8).toUpperCase()}</span><h3>{order.customerName||"Customer request"}</h3><p>{order.phone||"No phone supplied"} · {order.mode==="delivery"?"Delivery":"Collection"} · {order.createdAt?new Date(order.createdAt).toLocaleString():"Time not available"}</p></div><span className={"mogobeOrderStatus "+String(order.status||"New").toLowerCase()}>{order.status||"New"}</span></div><div className="mogobeOrderDetails"><div><strong>Items requested</strong>{(order.items??[]).map((item,i)=><p key={i}>{item.name||"Item"} · {item.quantity??1} {item.unit==="kg"?"kg":item.unit||"unit"} · {money(Number(item.price??0)*Number(item.quantity??1))}</p>)}</div><div><strong>Estimated basket</strong><b>{money(Number(order.total??0))}</b><small>Final packed weight and price require confirmation.</small></div></div>{order.scheduledFor&&<p className="mogobeOrderNote">Preferred time: {order.scheduledFor} (not yet confirmed)</p>}{order.deliveryLocation&&<p className="mogobeOrderNote">Location: {order.deliveryLocation}</p>}{order.instructions&&<p className="mogobeOrderNote">Notes: {order.instructions}</p>}<div className="mogobeOrderActions"><label>Update status<select value={order.status||"New"} onChange={e=>void changeStatus(order,e.target.value)}>{statuses.map(status=><option key={status}>{status}</option>)}</select></label><Link href={"/orders/"+encodeURIComponent(order.id)}>Open customer view ↗</Link></div></article>)}</div>}
     </section>:<section className="mogobeAdminSection"><div className="mogobeAdminSectionTitle"><div><span className="mogobeAdminEyebrow">THE MOGOBE COUNTER</span><h2>Product catalogue</h2></div><p>Prices and availability here control what customers can browse.</p></div>
-      <div className="mogobeCatalogueLayout"><form className="mogobeProductEditor" onSubmit={saveProduct}><span className="mogobeAdminEyebrow">{editing?"EDIT PRODUCT":"ADD A PRODUCT"}</span><h3>{editing?"Update this cut":"List a new cut"}</h3><label>Product name<input required maxLength={100} value={draft.name} onChange={e=>setField("name",e.target.value)}/></label><label>Category<input required maxLength={60} value={draft.category} onChange={e=>setField("category",e.target.value)}/></label><label>Description<textarea maxLength={1000} rows={3} value={draft.description} onChange={e=>setField("description",e.target.value)}/></label><div className="mogobeProductEditorRow"><label>Price (BWP)<input type="number" min="0" step="0.01" required value={draft.price} onChange={e=>setField("price",Number(e.target.value))}/></label><label>Sold by<select value={draft.unit} onChange={e=>setField("unit",e.target.value as ProductDraft["unit"])}><option value="kg">Kilogram</option><option value="pack">Pack</option><option value="each">Each</option></select></label></div><label>Image URL<input value={draft.imageUrl} onChange={e=>setField("imageUrl",e.target.value)} placeholder="/mogobe-meat-placeholder.svg or image URL"/></label><label>Display order<input type="number" value={draft.sortOrder} onChange={e=>setField("sortOrder",Number(e.target.value))}/></label><label className="mogobeAdminCheckbox"><input type="checkbox" checked={draft.available} onChange={e=>setField("available",e.target.checked)}/> Available to customers</label><div className="mogobeProductEditorActions"><button type="submit" disabled={saving}>{saving?"Saving…":editing?"Save changes":"Add product"}</button><button type="button" className="secondary" onClick={resetDraft}>Clear</button></div><p className="mogobeAdminHint">Prices shown to customers are indicative. Image URL editing is enabled; direct image uploads require a separately verified Mogobe upload configuration.</p></form>
+      <div className="mogobeCatalogueLayout"><form className="mogobeProductEditor" onSubmit={saveProduct}><span className="mogobeAdminEyebrow">{editing?"EDIT PRODUCT":"ADD A PRODUCT"}</span><h3>{editing?"Update this cut":"List a new cut"}</h3><label>Product name<input required maxLength={100} value={draft.name} onChange={e=>setField("name",e.target.value)}/></label><label>Category<input required maxLength={60} value={draft.category} onChange={e=>setField("category",e.target.value)}/></label><label>Description<textarea maxLength={1000} rows={3} value={draft.description} onChange={e=>setField("description",e.target.value)}/></label><div className="mogobeProductEditorRow"><label>Price (BWP)<input type="number" min="0" step="0.01" required value={draft.price} onChange={e=>setField("price",Number(e.target.value))}/></label><label>Sold by<select value={draft.unit} onChange={e=>setField("unit",e.target.value as ProductDraft["unit"])}><option value="kg">Kilogram</option><option value="pack">Pack</option><option value="each">Each</option></select></label></div><label>Product image<input type="file" accept="image/*" disabled={uploadingImage||saving} onChange={e=>{const file=e.currentTarget.files?.[0];if(file)void uploadProductImage(file);e.currentTarget.value="";}}/><small>{uploadingImage?"Uploading image…":"Upload an image (max 4 MB), or paste a hosted image URL below."}</small></label><label>Image URL<input value={draft.imageUrl} onChange={e=>setField("imageUrl",e.target.value)} placeholder="/mogobe-meat-placeholder.svg or image URL"/></label><label>Display order<input type="number" value={draft.sortOrder} onChange={e=>setField("sortOrder",Number(e.target.value))}/></label><label className="mogobeAdminCheckbox"><input type="checkbox" checked={draft.available} onChange={e=>setField("available",e.target.checked)}/> Available to customers</label><div className="mogobeProductEditorActions"><button type="submit" disabled={saving||uploadingImage}>{saving?"Saving…":editing?"Save changes":"Add product"}</button><button type="button" className="secondary" onClick={resetDraft}>Clear</button></div><p className="mogobeAdminHint">Prices shown to customers are indicative. Images can be uploaded by authorised staff; image URLs remain available as a fallback.</p></form>
       <div className="mogobeProductInventory"><div className="mogobeInventoryTools"><label>Find a product<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search catalogue"/></label><button type="button" onClick={()=>{setDraft({...emptyDraft});setEditing(null)}}>＋ New product</button></div>{loadingProducts?<p className="mogobeAdminEmpty">Loading catalogue…</p>:filtered.length===0?<p className="mogobeAdminEmpty">No products match. Add your first product using the form.</p>:<div className="mogobeInventoryList">{filtered.map(product=><article key={product.id} className="mogobeInventoryItem"><img src={product.imageUrl||"/mogobe-meat-placeholder.svg"} alt=""/><div><strong>{product.name}</strong><span>{product.category} · {money(Number(product.price||0))} / {product.unit}</span><small>{product.available?"Available to customers":"Hidden from customers"}</small></div><div className="mogobeInventoryActions"><button type="button" onClick={()=>startEdit(product)}>Edit</button><button type="button" className="secondary" onClick={()=>void toggleAvailability(product)}>{product.available?"Pause":"List"}</button><button type="button" className="danger" onClick={()=>void removeProduct(product)}>Delete</button></div></article>)}</div>}</div></div>
     </section>}
     <footer className="mogobeAdminFooter"><Link href="/">← Return to customer shop</Link><span>Mogobe Butchery · African Mall, Unit 6</span></footer>
