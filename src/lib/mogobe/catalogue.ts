@@ -71,6 +71,28 @@ export async function getMogobeProducts(): Promise<MogobeProduct[]> {
   return SEED_PRODUCTS;
 }
 
+export async function getLiveMogobeProducts(): Promise<MogobeProduct[]> {
+  const snapshot = await getDocs(query(collection(db, "products"), where("available", "==", true)));
+  return snapshot.docs.map((item) => {
+    const data = item.data();
+    return {
+      id: item.id,
+      name: String(data.name ?? "Meat product"),
+      category: String(data.category ?? "Other"),
+      description: String(data.description ?? ""),
+      price: Number(data.price ?? 0),
+      unit: data.unit === "pack" || data.unit === "each" ? data.unit : "kg",
+      imageUrl: String(data.imageUrl ?? "/mogobe-meat-placeholder.svg"),
+      available: data.available === true,
+      sortOrder: Number(data.sortOrder ?? 999),
+      ...(typeof data.specialPrice === "number" ? { specialPrice: data.specialPrice } : {}),
+      ...(typeof data.specialLabel === "string" ? { specialLabel: data.specialLabel } : {}),
+      ...(typeof data.specialStartsAt === "string" ? { specialStartsAt: data.specialStartsAt } : {}),
+      ...(typeof data.specialEndsAt === "string" ? { specialEndsAt: data.specialEndsAt } : {})
+    } satisfies MogobeProduct;
+  }).sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
+}
+
 export function readMogobeCart(): MogobeCartLine[] {
   if (typeof window === "undefined") return [];
   try {
