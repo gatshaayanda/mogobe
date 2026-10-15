@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { getMogobeProducts, money, readMogobeCart, writeMogobeCart, type MogobeCartLine, type MogobeProduct } from "@/lib/mogobe/catalogue";
+import { currentProductPrice, getMogobeProducts, isProductSpecialActive, money, readMogobeCart, writeMogobeCart, type MogobeCartLine, type MogobeProduct } from "@/lib/mogobe/catalogue";
 
 const categories = ["All", "Beef", "Boroso", "Offal", "Specials"];
 
@@ -33,7 +33,7 @@ export default function MogobeStorefront() {
     const quantity = quantities[product.id] ?? (product.unit === "kg" ? 1 : 1);
     const cart = readMogobeCart();
     const existing = cart.find((line) => line.productId === product.id);
-    const line: MogobeCartLine = { productId: product.id, name: product.name, category: product.category, price: product.price, unit: product.unit, imageUrl: product.imageUrl, quantity: (existing?.quantity ?? 0) + quantity };
+    const line: MogobeCartLine = { productId: product.id, name: product.name, category: product.category, price: currentProductPrice(product), unit: product.unit, imageUrl: product.imageUrl, quantity: (existing?.quantity ?? 0) + quantity };
     writeMogobeCart(existing ? cart.map((item) => item.productId === product.id ? line : item) : [...cart, line]);
     setNotice(product.name + " added to your basket.");
     window.setTimeout(() => setNotice(""), 2600);
@@ -64,7 +64,7 @@ export default function MogobeStorefront() {
       {notice && <p className="mogobeToast" role="status">{notice}</p>}
       {loading ? <div className="mogobeEmpty">Loading the counter…</div> : visible.length ? <div className="mogobeProductGrid">{visible.map((product, index) => <article className="mogobeProductCard" key={product.id}>
         <Link href={"/products/" + encodeURIComponent(product.id)} className="mogobeProductImage"><img src={product.imageUrl || "/mogobe-meat-placeholder.svg"} alt={product.name} loading={index > 3 ? "lazy" : "eager"} /><span>{product.category}</span></Link>
-        <div className="mogobeProductCardBody"><div className="mogobeProductTitleRow"><h3>{product.name}</h3><strong>{money(product.price)}<small> / {product.unit === "kg" ? "kg" : product.unit}</small></strong></div><p>{product.description}</p><div className="mogobeProductControls"><label htmlFor={"qty-" + product.id}>{product.unit === "kg" ? "Weight" : "Quantity"}<select id={"qty-" + product.id} value={quantities[product.id] ?? 1} onChange={(event) => setQuantities((old) => ({ ...old, [product.id]: Number(event.target.value) }))}>{(product.unit === "kg" ? [0.5, 1, 1.5, 2, 3, 5] : [1, 2, 3, 4, 5]).map((value) => <option value={value} key={value}>{product.unit === "kg" ? value + " kg" : value}</option>)}</select></label><button type="button" onClick={() => add(product)} className="mogobeAddButton">Add to basket <span aria-hidden="true">＋</span></button></div></div>
+        <div className="mogobeProductCardBody"><div className="mogobeProductTitleRow"><h3>{product.name}</h3><strong>{isProductSpecialActive(product) ? <><span className="mogobeSpecialPrice">{money(currentProductPrice(product))}</span><del>{money(product.price)}</del></> : money(product.price)}<small> / {product.unit === "kg" ? "kg" : product.unit}</small></strong></div>{isProductSpecialActive(product)&&<span className="mogobeSpecialBadge">{product.specialLabel||"Limited-time special"}</span>}<p>{product.description}</p><div className="mogobeProductControls"><label htmlFor={"qty-" + product.id}>{product.unit === "kg" ? "Weight" : "Quantity"}<select id={"qty-" + product.id} value={quantities[product.id] ?? 1} onChange={(event) => setQuantities((old) => ({ ...old, [product.id]: Number(event.target.value) }))}>{(product.unit === "kg" ? [0.5, 1, 1.5, 2, 3, 5] : [1, 2, 3, 4, 5]).map((value) => <option value={value} key={value}>{product.unit === "kg" ? value + " kg" : value}</option>)}</select></label><button type="button" onClick={() => add(product)} className="mogobeAddButton">Add to basket <span aria-hidden="true">＋</span></button></div></div>
       </article>)}</div> : <div className="mogobeEmpty"><strong>No cuts match that search.</strong><p>Try another name or category.</p></div>}
       <p className="mogobePriceNote">Indicative pricing only. Weight-based orders are finalised against the actual packed weight and confirmed price.</p>
     </section>
