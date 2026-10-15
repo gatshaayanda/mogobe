@@ -335,11 +335,11 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       </section>
     </div>
   ) : installState === "embedded" ? (
-    <div style={embeddedInstallStyle} role="alertdialog" aria-modal="true" aria-labelledby="plug-embedded-title" aria-describedby="plug-embedded-message">
+    <div style={embeddedInstallStyle} role="alertdialog" aria-modal="true" aria-labelledby="mogobe-embedded-title" aria-describedby="mogobe-embedded-message">
       <div className="pwaInstallInfo" style={{...installShellStyle, position: "relative", left: "auto", right: "auto", bottom: "auto", width: "100%", maxWidth: 520, margin: 0}}>
         <div>
-          <strong id="plug-embedded-title"><span aria-hidden="true">🌐 </span>OPEN MOGOBE BUTCHERY IN YOUR BROWSER</strong>
-          <span id="plug-embedded-message">{embeddedAndroid ? <>Tap below to open Mogobe Butchery in Chrome. Then open the <b>⋮ menu</b> and choose <b>Install app</b>.</> : <>Mogobe Butchery opened inside another app. Use that app’s menu to open this page in your browser, then look for <b>Install app</b> in the browser menu.</>}</span>
+          <strong id="mogobe-embedded-title"><span aria-hidden="true">🌐 </span>OPEN MOGOBE BUTCHERY IN YOUR BROWSER</strong>
+          <span id="mogobe-embedded-message">{embeddedAndroid ? <>Tap below to open Mogobe Butchery in Chrome. Then open the <b>⋮ menu</b> and choose <b>Install app</b>.</> : <>Mogobe Butchery opened inside another app. Use that app’s menu to open this page in your browser, then look for <b>Install app</b> in the browser menu.</>}</span>
         </div>
         <div className="pwaInstallActions" style={{display:"flex",justifyContent:"flex-end"}}>
           <button ref={embeddedActionRef} type="button" style={{background:"#922a2b",color:"#fff"}} onClick={openBrowser}>{embeddedAndroid ? "OPEN IN CHROME" : "OPEN IN BROWSER"}</button>
@@ -354,7 +354,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     {pathname === "/" && !environment().standalone && installState !== "embedded" && (
       <button
         type="button"
-        className="plugPwaInstallButton"
+        className="mogobePwaInstallButton"
         onClick={() => {
           const env = environment();
           if (env.embedded) {
