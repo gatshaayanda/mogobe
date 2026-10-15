@@ -45,8 +45,9 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, "public/manifest.web
 if (manifest.name !== "Mogobe Butchery") failures.push("public/manifest.webmanifest: wrong name");
 if (manifest.short_name !== "Mogobe") failures.push("public/manifest.webmanifest: wrong short name");
 if (manifest.theme_color !== "#922a2b") failures.push("public/manifest.webmanifest: wrong theme color");
-if (!manifest.icons?.some((icon) => icon.src === "/mogobe-icon.svg")) failures.push("public/manifest.webmanifest: Mogobe icon missing");
+if (!manifest.icons?.some((icon) => icon.src === "/mogobe-icon-192")) failures.push("public/manifest.webmanifest: Mogobe icon missing");
 if (!fs.existsSync(path.join(root, "public/mogobe-icon.svg"))) failures.push("public/mogobe-icon.svg: missing");
+for (const route of ["src/app/mogobe-icon-192/route.tsx", "src/app/mogobe-icon-512/route.tsx", "src/app/mogobe-apple-icon/route.tsx"]) if (!fs.existsSync(path.join(root, route))) failures.push(route + ": missing install icon endpoint");
 const sw = fs.readFileSync(path.join(root, "public/sw.js"), "utf8");
 if (!/mogobe-shell-v\d+/.test(sw)) failures.push("public/sw.js: missing Mogobe cache namespace");
 if (!sw.includes("/mogobe-icon.svg")) failures.push("public/sw.js: Mogobe icon missing from app shell");
