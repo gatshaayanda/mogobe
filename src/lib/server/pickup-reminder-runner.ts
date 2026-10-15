@@ -251,7 +251,7 @@ async function sendTestNotification(uid:string,deviceToken:string):Promise<Notif
     notification:{title,body},
     data:{title,body,link,test:"true"},
     webpush:{
-      fcmOptions:{link:(process.env.NEXT_PUBLIC_BASE_URL||"")+link},
+      ...(process.env.NEXT_PUBLIC_BASE_URL ? {fcmOptions:{link:process.env.NEXT_PUBLIC_BASE_URL+link}} : {}),
       notification:{tag:"mogobe-test-notification",icon:"/mogobe-icon.svg",badge:"/mogobe-icon.svg"}
     }
   });
@@ -323,7 +323,7 @@ async function sendConversationMessageNotification(conversationId:string,message
     const deliveryData={conversationId,messageId,recipientUid:uid,type:"conversation-message"};
     if(!await claimDelivery(jobId,deliveryData))continue;
     try{
-      const result=await sendToUser(uid,{notification:{title,body},data:{title,body,link,conversationId,messageId},webpush:{fcmOptions:{link:publicUrl+link},notification:{tag:"mogobe-conversation-"+conversationId,icon:"/mogobe-icon.svg",badge:"/mogobe-icon.svg"}}});
+      const result=await sendToUser(uid,{notification:{title,body},data:{title,body,link,conversationId,messageId},webpush:{...(publicUrl ? {fcmOptions:{link:publicUrl+link}} : {}),notification:{tag:"mogobe-conversation-"+conversationId,icon:"/mogobe-icon.svg",badge:"/mogobe-icon.svg"}}});
       if(result.sent){await markSent(jobId,deliveryData);sent++;}else await releaseDelivery(jobId);
     }catch(error){await releaseDelivery(jobId).catch(()=>{});console.error("Mogobe Butchery conversation notification failed for "+uid+":",error);}
   }
