@@ -12,13 +12,13 @@ export default async function RootLayout({children}:{children:React.ReactNode}){
  const requestHeaders=await headers();
  const userAgent=requestHeaders.get("user-agent")||"";
  const android=/Android/i.test(userAgent);
- return <html lang="en"><body><Script id="theplug-early-install-capture" strategy="beforeInteractive">{`
+ return <html lang="en"><body><Script id="mogobe-early-install-capture" strategy="beforeInteractive">{`
 (function () {
   window.addEventListener("beforeinstallprompt", function (event) {
     var standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
-    if (standalone || window.__thePlugPwaListenerReady === true) return;
+    if (standalone || window.__mogobePwaListenerReady === true) return;
     event.preventDefault();
-    window.__thePlugInstallPrompt = event;
+    window.__mogobeInstallPrompt = event;
   });
 })();
 `}</Script><PwaRegister initialEmbedded={false} initialAndroid={android}/>{children}<Analytics/><SpeedInsights/></body></html>
