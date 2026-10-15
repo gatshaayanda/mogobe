@@ -72,7 +72,7 @@ export async function ensureStarterMenuSeeded():Promise<MenuItem[]>{const snapsh
 // Existing menu records must never be silently reclassified by the current day. 
 
 
-const MENU_CACHE_KEY="the-plug-menu-cache-v2";
+const MENU_CACHE_KEY="mogobe-menu-cache-v2";
 export function readCachedMenuItems():MenuItem[]{if(typeof window==="undefined")return [];try{const raw=window.localStorage.getItem(MENU_CACHE_KEY);return raw?JSON.parse(raw) as MenuItem[]:[]}catch{return []}}
 export async function getMenuItems():Promise<MenuItem[]>{const snapshot=await getDocs(menuCollection);const items=snapshot.docs.map(item=>({id:item.id,...item.data() as Omit<MenuItem,"id">})).sort((a,b)=>a.sortOrder-b.sortOrder||a.name.localeCompare(b.name));try{if(typeof window!=="undefined")window.localStorage.setItem(MENU_CACHE_KEY,JSON.stringify(items))}catch{}return items}
 export async function saveMenuItem(item:MenuItem){await setDoc(doc(menuCollection,item.id),item)}
