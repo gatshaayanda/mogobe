@@ -18,7 +18,7 @@ export default function MogobeStorefront() {
   useEffect(() => {
     let active = true;
     void getMogobeProducts().then((items) => { if (active) setProducts(items); }).finally(() => { if (active) setLoading(false); });
-    const refreshCart = () => setCartCount(readMogobeCart().reduce((sum, item) => sum + item.quantity, 0));
+    const refreshCart = () => setCartCount(readMogobeCart().length);
     refreshCart();
     window.addEventListener("mogobe-cart-updated", refreshCart);
     return () => { active = false; window.removeEventListener("mogobe-cart-updated", refreshCart); };
