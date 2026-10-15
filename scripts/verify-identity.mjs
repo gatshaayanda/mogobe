@@ -40,7 +40,7 @@ for (const file of walk(root)) {
 }
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "public/manifest.webmanifest"), "utf8"));
 if (manifest.name !== "Mogobe Butchery") failures.push("public/manifest.webmanifest: wrong name");
-if (manifest.short_name !== "Mogobe") failures.push("public/manifest.webmanifest: wrong short_name");
+if (manifest.short_name !== "Mogobe") failures.push("public/manifest.webmanifest: wrong short name");
 if (manifest.theme_color !== "#922a2b") failures.push("public/manifest.webmanifest: wrong theme color");
 if (!manifest.icons?.some((icon) => icon.src === "/mogobe-icon.svg")) failures.push("public/manifest.webmanifest: Mogobe icon missing");
 if (!fs.existsSync(path.join(root, "public/mogobe-icon.svg"))) failures.push("public/mogobe-icon.svg: missing");
