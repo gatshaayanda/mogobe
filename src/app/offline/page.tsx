@@ -2,23 +2,18 @@ import Link from "next/link";
 
 export default function OfflinePage() {
   return (
-    <main className="orderPage">
-      <div className="orderWrap">
-        <div className="orderHeader">
-          <Link href="/" className="logo"><span className="logoMark">P</span><span>The Plug</span></Link>
+    <main className="mogobeInnerPage">
+      <section className="mogobeSuccess">
+        <span className="mogobeSuccessIcon" aria-hidden="true">↯</span>
+        <span className="mogobeEyebrow">OFFLINE MODE</span>
+        <h1>You’re still<br/><em>with Mogobe.</em></h1>
+        <p>Some catalogue content may be available on this device, but prices and availability can change.</p>
+        <div className="mogobePendingNotice">
+          <strong>Checkout needs a connection.</strong>
+          <span>Your basket and order request are not sent until you reconnect and Mogobe confirms the request.</span>
         </div>
-        <section className="orderCard confirm">
-          <div className="confirmIcon">📶</div>
-          <span className="kicker">Offline mode</span>
-          <h1>The Plug is still here.</h1>
-          <p>The app shell and public finds you have already loaded may remain available on this device. Saved information can be out of date.</p>
-          <p>Prices, stock and offers can change while you are offline. Requests, account updates and messages are not sent until a connection is available and The Plug confirms the action.</p>
-          <div className="actions centered">
-            <Link className="button buttonPrimary" href="/request">Open request</Link>
-            <Link className="button buttonLight" href="/">Open The Plug</Link>
-          </div>
-        </section>
-      </div>
+        <Link className="mogobePrimaryButton" href="/">Return to the counter ↗</Link>
+      </section>
     </main>
   );
 }
