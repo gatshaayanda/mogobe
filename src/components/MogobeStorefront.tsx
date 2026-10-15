@@ -44,7 +44,7 @@ export default function MogobeStorefront() {
     <header className="mogobeHeader">
       <Link href="/" className="mogobeWordmark" aria-label="Mogobe Butchery home"><span className="mogobeBrandIcon">M</span><span><strong>MOGOBE</strong><small>BUTCHERY · GABORONE</small></span></Link>
       <nav aria-label="Main navigation"><Link href="#shop">Shop meat</Link><Link href="#how-it-works">How it works</Link></nav>
-      <Link href="/basket" className="mogobeBasketLink">Basket <span>{Math.round(cartCount * 100) / 100}</span></Link>
+      <div className="mogobeHeaderActions"><button type="button" className="mogobeInstallButton" onClick={() => window.dispatchEvent(new Event("theplug-open-install"))}>Install app</button><Link href="/basket" className="mogobeBasketLink">Basket <span>{Math.round(cartCount * 100) / 100}</span></Link></div>
     </header>
 
     <section className="mogobeHero">
