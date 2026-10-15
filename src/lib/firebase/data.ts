@@ -7,7 +7,7 @@ export const ORDER_STATUSES=["New","Accepted","Preparing","Ready","Delivering","
 export type OrderStatus=typeof ORDER_STATUSES[number];
 export type PaymentMethod="unpaid"|"cash"|"etransfer"|"other";
 export type PaymentStatus="unpaid"|"paid"|"partial";
-export type OrderItem={name:string;price:number;quantity:number};
+export type OrderItem={name:string;price:number;quantity:number;productId?:string;category?:string;unit?:"kg"|"pack"|"each";imageUrl?:string};
 export type CustomerProfile={uid:string;name:string;email:string;phone:string;preferredDeliveryLocation:string;notes:string;createdAt:string;updatedAt:string};
 export type FoodOrder={id:string;customerId?:string;createdAt:string;customerName:string;phone:string;mode:"pickup"|"delivery";scheduledFor:string;deliveryLocation:string;instructions:string;items:OrderItem[];total:number;status:OrderStatus;paymentStatus?:PaymentStatus;paymentMethod?:PaymentMethod;amountPaid?:number};
 export type MenuItem={id:string;name:string;price:number;friendPrice?:number;category:string;description:string;available:boolean;preparationMinutes:number;sortOrder:number;imageUrl?:string;section?:"daily"|"deal";days?:string[];brand?:string;productType?:string;sizes?:string[];colors?:string[];sourceUrl?:string};
@@ -72,7 +72,7 @@ export async function ensureStarterMenuSeeded():Promise<MenuItem[]>{const snapsh
 // Existing menu records must never be silently reclassified by the current day. 
 
 
-const MENU_CACHE_KEY="the-plug-menu-cache-v2";
+const MENU_CACHE_KEY="mogobe-menu-cache-v2";
 export function readCachedMenuItems():MenuItem[]{if(typeof window==="undefined")return [];try{const raw=window.localStorage.getItem(MENU_CACHE_KEY);return raw?JSON.parse(raw) as MenuItem[]:[]}catch{return []}}
 export async function getMenuItems():Promise<MenuItem[]>{const snapshot=await getDocs(menuCollection);const items=snapshot.docs.map(item=>({id:item.id,...item.data() as Omit<MenuItem,"id">})).sort((a,b)=>a.sortOrder-b.sortOrder||a.name.localeCompare(b.name));try{if(typeof window!=="undefined")window.localStorage.setItem(MENU_CACHE_KEY,JSON.stringify(items))}catch{}return items}
 export async function saveMenuItem(item:MenuItem){await setDoc(doc(menuCollection,item.id),item)}

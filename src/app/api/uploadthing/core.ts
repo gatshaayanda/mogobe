@@ -22,7 +22,7 @@ export const ourFileRouter = {
     pdf: { maxFileSize: "4MB", maxFileCount: 1 },
   }).middleware(async ({ req }) => {
     const header = req.headers.get("authorization") || "";
-    const match = header.match(/^Bearer\\s+(.+)$/i);
+    const match = header.match(/^Bearer\s+(.+)$/i);
     if (!match) throw new UploadThingError("Sign in with a Mogobe staff account to upload files.");
     const app = adminApp();
     let uid: string;

@@ -57,7 +57,7 @@ export async function POST(request:Request){
      data:{title,body,link:"/account#requests",requestId},
      webpush:{
       fcmOptions:{link:baseUrl+"/account#requests"},
-      notification:{tag:"the-plug-request-"+requestId,icon:"/mogobe-icon.svg",badge:"/mogobe-icon.svg"}
+      notification:{tag:"mogobe-request-"+requestId,icon:"/mogobe-icon.svg",badge:"/mogobe-icon.svg"}
      }
     });
     sent++;

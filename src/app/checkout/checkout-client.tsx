@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
 import { auth, db, hasFirebaseWebConfig } from "@/lib/firebase/client";
-import { money, readMogobeCart, writeMogobeCart, type MogobeCartLine } from "@/lib/mogobe/catalogue";
+import { currentProductPrice, getLiveMogobeProducts, money, readMogobeCart, writeMogobeCart, type MogobeCartLine } from "@/lib/mogobe/catalogue";
 
 function localDateTime() {
   const now = new Date();
@@ -43,6 +43,23 @@ export default function CheckoutClient() {
       setBusy(false); return;
     }
     try {
+      const liveProducts = await getLiveMogobeProducts();
+      const unavailable = lines.filter(line => !liveProducts.some(product => product.id === line.productId && product.available));
+      if (unavailable.length) {
+        setError("These items are no longer available: " + unavailable.map(line => line.name).join(", ") + ". Remove them from your basket before continuing.");
+        setBusy(false); return;
+      }
+      const refreshedLines = lines.map(line => {
+        const product = liveProducts.find(item => item.id === line.productId)!;
+        return { ...line, price: currentProductPrice(product), imageUrl: product.imageUrl };
+      });
+      const priceChanged = refreshedLines.some((line, index) => Math.abs(line.price - lines[index].price) > 0.001);
+      if (priceChanged) {
+        setLines(refreshedLines); writeMogobeCart(refreshedLines);
+        setError("We refreshed one or more prices to match the current Mogobe catalogue or special. Review the updated estimate, then submit again.");
+        setBusy(false); return;
+      }
+      setLines(refreshedLines); writeMogobeCart(refreshedLines);
       const user = auth.currentUser ?? (await signInAnonymously(auth)).user;
       const orderRef = doc(collection(db, "orders"));
       const id = orderRef.id;
@@ -56,8 +73,8 @@ export default function CheckoutClient() {
         scheduledFor: new Date(preferredAt).toISOString(),
         deliveryLocation,
         instructions,
-        items: lines.map((item) => ({ name: item.name, productId: item.productId, category: item.category, price: item.price, quantity: item.quantity, unit: item.unit, lineTotal: Math.round(item.price * item.quantity * 100) / 100 })),
-        total: Math.round(subtotal * 100) / 100,
+        items: refreshedLines.map((item) => ({ name: item.name, productId: item.productId, category: item.category, price: item.price, quantity: item.quantity, unit: item.unit, lineTotal: Math.round(item.price * item.quantity * 100) / 100 })),
+        total: Math.round(refreshedLines.reduce((sum, item) => sum + item.price * item.quantity, 0) * 100) / 100,
         status: "New"
       };
       await setDoc(orderRef, order);
