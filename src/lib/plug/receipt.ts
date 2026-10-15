@@ -142,7 +142,7 @@ export function downloadReceiptPdf(order:ReceiptOrder){
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
   a.href=url;
-  a.download="the-plug-receipt-"+reference+".pdf";
+  a.download="mogobe-receipt-"+reference+".pdf";
   document.body.appendChild(a);
   a.click();
   a.remove();
