@@ -9,7 +9,7 @@ export const ourFileRouter = {
     image: { maxFileSize: "4MB", maxFileCount: 1 },
     pdf: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
-    console.info("[The Plug] sourcing attachment uploaded", {
+    console.info("[Mogobe Butchery] sourcing attachment uploaded", {
       name: file.name,
       size: file.size,
       type: file.type,
