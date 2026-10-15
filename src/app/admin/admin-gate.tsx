@@ -1,8 +1,8 @@
 "use client";
 
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
+import { onAuthStateChanged, signInWithCustomToken, signOut, type User } from "firebase/auth";
 import Link from "next/link";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db, hasFirebaseWebConfig } from "@/lib/firebase/client";
 
@@ -24,8 +24,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
   const [checking, setChecking] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [accessError, setAccessError] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [accessWord, setAccessWord] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -64,8 +63,21 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       return;
     }
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
-      setPassword("");
+      const response = await fetch("/api/operations-login", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify({ word: accessWord }),
+      });
+      const payload = await response.json() as { token?: string; error?: string };
+      if (!response.ok || !payload.token) throw new Error(payload.error ?? "Access denied. Check the access word and try again.");
+      const credential = await signInWithCustomToken(auth, payload.token);
+      const role = await getDoc(doc(db, "admins", credential.user.uid));
+      if (!role.exists() || !["owner", "staff"].includes(String(role.data().role).toLowerCase())) {
+        await signOut(auth);
+        throw new Error("This access account is not authorised for Mogobe Admin.");
+      }
+      setAccessWord("");
     } catch (error) {
       setAccessError(friendlyError(error));
     } finally {
@@ -76,5 +88,5 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
   if (checking) return <main className="mogobeAdmin"><div className="mogobeAdminShell"><p role="status">Checking Mogobe admin access…</p></div></main>;
   if (user && authorized) return <div className="mogobeAdminAuthorized"><div className="mogobeAdminAccount"><span><strong>Mogobe Admin</strong><small>{user.email ?? "Authorised staff"}</small></span><button type="button" onClick={() => void signOut(auth)}>Sign out</button></div>{children}</div>;
 
-  return <main className="mogobeAdmin"><div className="mogobeAdminShell"><Link className="mogobeAdminBack" href="/">← Back to Mogobe Butchery</Link><section className="mogobeAdminLogin"><span className="mogobeAdminEyebrow">OWNER & STAFF ACCESS</span><h1>Good to see you.</h1><p>Sign in with your Mogobe staff account. Access is granted only when your Firebase account has an owner or staff role.</p><form onSubmit={signIn}><label>Email address<input type="email" autoComplete="username" required value={email} onChange={event=>setEmail(event.target.value)} /></label><label>Password<input type="password" autoComplete="current-password" required value={password} onChange={event=>setPassword(event.target.value)} /></label><button type="submit" disabled={busy}>{busy ? "Checking access…" : "Sign in to Mogobe"}</button></form>{accessError && <p role="alert" className="mogobeAdminError">{accessError}</p>}<p className="mogobeAdminHint">Admin accounts are provisioned separately. Customer accounts cannot grant themselves staff access.</p></section></div></main>;
+  return <main className="mogobeAdmin"><div className="mogobeAdminShell"><Link className="mogobeAdminBack" href="/">← Back to Mogobe Butchery</Link><section className="mogobeAdminLogin"><span className="mogobeAdminEyebrow">MOGOBE · ADMIN ACCESS</span><h1>Good to see you.</h1><p>Enter the Mogobe admin access word to continue. Access is granted only to the server-provisioned owner account or an authorised staff role.</p><form onSubmit={signIn}><label>Access word<input type="password" autoComplete="current-password" required autoFocus value={accessWord} onChange={event=>setAccessWord(event.target.value)} /></label><button type="submit" disabled={busy}>{busy ? "Checking access…" : "Enter Admin"}</button></form>{accessError && <p role="alert" className="mogobeAdminError">{accessError}</p>}<p className="mogobeAdminHint">Customer accounts cannot grant themselves staff access. The access word is checked on the server and is never stored in the browser.</p></section></div></main>;
 }
