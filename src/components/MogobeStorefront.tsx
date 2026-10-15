@@ -25,7 +25,7 @@ export default function MogobeStorefront() {
   }, []);
 
   const visible = useMemo(() => products.filter((item) =>
-    (category === "All" || item.category === category) &&
+    (category === "All" || (category === "Specials" ? item.category === "Specials" || isProductSpecialActive(item) : item.category === category)) &&
     (item.name + " " + item.category + " " + item.description).toLowerCase().includes(search.toLowerCase())
   ), [products, category, search]);
 
