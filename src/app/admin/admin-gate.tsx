@@ -12,11 +12,10 @@ function hasAdminRole(data: Record<string, unknown> | undefined) {
 
 function friendlyError(error: unknown) {
   const code = typeof error === "object" && error !== null && "code" in error ? String((error as {code?: unknown}).code) : "";
-  if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found", "auth/invalid-login-credentials"].includes(code)) return "Email or password was not recognised.";
   if (code === "auth/too-many-requests") return "Too many attempts. Please wait a moment and try again.";
   if (code === "auth/network-request-failed") return "We could not reach the sign-in service. Check your connection.";
-  if (code === "auth/operation-not-allowed") return "Email/password sign-in is not enabled for this Firebase project.";
-  return error instanceof Error ? error.message : "We could not sign you in.";
+  if (["auth/invalid-custom-token", "auth/custom-token-mismatch", "auth/invalid-user-token"].includes(code)) return "Admin sign-in could not be verified. Check the access word and try again.";
+  return error instanceof Error ? error.message : "We could not sign you in. Check the access word and try again.";
 }
 
 export default function AdminGate({ children }: { children: React.ReactNode }) {
