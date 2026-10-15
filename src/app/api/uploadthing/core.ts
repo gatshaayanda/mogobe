@@ -7,19 +7,31 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 const f = createUploadthing();
 
 function adminApp() {
-  if (getApps().length) return getApp();
+  const appName = "mogobe-uploadthing-server";
+  const existing = getApps().find((app) => app.name === appName);
+  if (existing) return existing;
   const raw = process.env.FIREBASE_ADMIN_KEY;
   if (!raw) throw new UploadThingError("Mogobe uploads are not configured.");
   let serviceAccount: Record<string, unknown>;
   try { serviceAccount = JSON.parse(raw) as Record<string, unknown>; }
   catch { throw new UploadThingError("Mogobe upload credentials are invalid."); }
-  return initializeApp({ credential: cert(serviceAccount as Parameters<typeof cert>[0]) });
+  const account = serviceAccount as { project_id?: string; client_email?: string; private_key?: string };
+  if (!account.project_id || !account.client_email || !account.private_key) {
+    throw new UploadThingError("Mogobe upload credentials are incomplete.");
+  }
+  return initializeApp({
+    credential: cert({
+      projectId: account.project_id,
+      clientEmail: account.client_email,
+      privateKey: account.private_key.replace(/\\n/g, "\n"),
+    }),
+    projectId: account.project_id,
+  }, appName);
 }
 
 export const ourFileRouter = {
   fileUploader: f({
     image: { maxFileSize: "4MB", maxFileCount: 1 },
-    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
   }).middleware(async ({ req }) => {
     const header = req.headers.get("authorization") || "";
     const match = header.match(/^Bearer\s+(.+)$/i);
