@@ -1,0 +1,3 @@
+import { ImageResponse } from "next/og";
+export const runtime = "edge";
+export async function GET() { return new ImageResponse(<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",background:"#922a2b",color:"#fff8ed",borderRadius:"34px",fontFamily:"Arial",fontWeight:900}}><div style={{fontSize:94,letterSpacing:"-0.08em"}}>M</div><div style={{fontSize:14,letterSpacing:"0.16em"}}>BUTCHERY</div></div>,{width:180,height:180}); }

@@ -1,0 +1,71 @@
+
+/* Mogobe owner and staff workspace */
+.mogobeAdmin,.mogobeAdminAuthorized{--ma-ink:#241d19;--ma-paper:#f7f1e8;--ma-white:#fffdf9;--ma-red:#922a2b;--ma-orange:#d58b4e;--ma-muted:#62574e;--ma-line:#ded2c3;background:var(--ma-paper);color:var(--ma-ink);min-height:100vh;font-family:'DM Sans',Arial,sans-serif}
+.mogobeAdmin *,.mogobeAdminAuthorized *{box-sizing:border-box}
+.mogobeAdmin button,.mogobeAdmin input,.mogobeAdmin textarea,.mogobeAdmin select,.mogobeAdminAuthorized button{font:inherit}
+.mogobeAdmin a{color:inherit}
+.mogobeAdminShell{width:min(1180px,calc(100% - 36px));margin:auto;padding:30px 0 54px}
+.mogobeAdminBack,.mogobeAdminHeaderLink{font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.mogobeAdminLogin{width:min(510px,100%);margin:50px auto;padding:clamp(24px,5vw,44px);background:var(--ma-white);border:1px solid var(--ma-line);box-shadow:0 18px 50px #34271a0d}
+.mogobeAdminEyebrow{display:block;color:var(--ma-red);font-size:.68rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+.mogobeAdminLogin h1,.mogobeAdminHeading h1{font-family:Manrope,Arial,sans-serif;font-size:clamp(2.6rem,6vw,4.8rem);line-height:.98;letter-spacing:-.06em;margin:14px 0}
+.mogobeAdminLogin>p,.mogobeAdminHeading p{color:#554940;line-height:1.7}
+.mogobeAdminLogin form,.mogobeProductEditor{display:grid;gap:15px}
+.mogobeAdminLogin label,.mogobeProductEditor label,.mogobeOrderActions label,.mogobeInventoryTools label{display:grid;gap:7px;font-size:.78rem;font-weight:800}
+.mogobeAdmin input,.mogobeAdmin textarea,.mogobeAdmin select{width:100%;min-height:43px;padding:10px 12px;border:1px solid #cbbdad;background:#fff;color:var(--ma-ink);border-radius:4px}
+.mogobeAdmin input:focus-visible,.mogobeAdmin textarea:focus-visible,.mogobeAdmin select:focus-visible,.mogobeAdmin button:focus-visible{outline:3px solid var(--ma-orange);outline-offset:2px}
+.mogobeAdmin button{min-height:42px;padding:10px 14px;border:1px solid var(--ma-red);border-radius:4px;background:var(--ma-red);color:white;font-weight:800;cursor:pointer}
+.mogobeAdmin button:disabled{opacity:.6;cursor:wait}
+.mogobeAdmin button.secondary{background:transparent;color:var(--ma-ink);border-color:var(--ma-line)}
+.mogobeAdmin button.danger{background:#fff1ed;color:#852a26;border-color:#d6a19b}
+.mogobeAdminError,.mogobeAdminNotice{padding:12px 14px;border-left:4px solid var(--ma-red);background:#fff1ed;color:#672020;font-size:.86rem}
+.mogobeAdminNotice{border-color:#41744c;background:#eff8ee;color:#24542e}
+.mogobeAdminHint{font-size:.76rem;line-height:1.55;color:#65594f}
+.mogobeAdminAuthorized{background:var(--ma-paper);color:var(--ma-ink)}
+.mogobeAdminAccount{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px max(18px,calc((100vw - 1180px)/2));background:var(--ma-ink);color:white}
+.mogobeAdminAccount span{display:grid;gap:3px}.mogobeAdminAccount small{color:#f3d8c2}
+.mogobeAdminHeading{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:25px 0 30px}
+.mogobeAdminHeading h1 em{font-style:normal;color:var(--ma-red)}
+.mogobeAdminHeading p{max-width:540px}
+.mogobeAdminHeading>a{flex-shrink:0;font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.mogobeAdminStats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:10px 0 28px}
+.mogobeAdminStats article{padding:20px;background:var(--ma-white);border:1px solid var(--ma-line);display:grid;gap:7px}
+.mogobeAdminStats span,.mogobeAdminStats small{font-size:.78rem;color:#5b5047}.mogobeAdminStats strong{font-family:Manrope,Arial,sans-serif;font-size:2.4rem;line-height:1}
+.mogobeAdminTabs{display:flex;gap:8px;border-bottom:1px solid var(--ma-line);margin-bottom:24px}
+.mogobeAdminTabs button{background:transparent;color:var(--ma-ink);border-color:transparent;border-bottom:3px solid transparent;border-radius:0}
+.mogobeAdminTabs button.active{border-bottom-color:var(--ma-red);color:var(--ma-red)}
+.mogobeAdminTabs button span{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;margin-left:6px;border-radius:50%;background:#efe2d3;font-size:.72rem}
+.mogobeAdminSection{padding:clamp(18px,3vw,30px);background:var(--ma-white);border:1px solid var(--ma-line)}
+.mogobeAdminSectionTitle{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.mogobeAdminSectionTitle h2{font-family:Manrope,Arial,sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.05em;margin:8px 0 0}
+.mogobeAdminSectionTitle>p{max-width:350px;color:#62574e;font-size:.8rem;line-height:1.6}
+.mogobeAdminEmpty{padding:28px;background:#f7f1e8;text-align:center;color:#554940;line-height:1.6}
+.mogobeAdminEmpty strong{color:var(--ma-ink);font-size:1.1rem}
+.mogobeOrderList,.mogobeInventoryList{display:grid;gap:12px}
+.mogobeOrderCard{padding:18px;border:1px solid var(--ma-line);background:#fff}
+.mogobeOrderTop{display:flex;justify-content:space-between;align-items:start;gap:15px}
+.mogobeOrderTop h3{font-family:Manrope,Arial,sans-serif;font-size:1.2rem;margin:6px 0}
+.mogobeOrderTop p,.mogobeOrderNote{font-size:.78rem;color:#5e534a;line-height:1.55}
+.mogobeOrderStatus{display:inline-flex;padding:7px 10px;border-radius:999px;background:#f4e6d4;color:#69411d;font-size:.7rem;font-weight:900;white-space:nowrap}
+.mogobeOrderStatus.accepted,.mogobeOrderStatus.ready,.mogobeOrderStatus.completed{background:#e5f1e4;color:#285d32}
+.mogobeOrderStatus.declined{background:#fae5e2;color:#852a26}
+.mogobeOrderDetails{display:grid;grid-template-columns:1fr minmax(160px,.4fr);gap:20px;padding:14px 0;border-top:1px solid #eee3d8;border-bottom:1px solid #eee3d8}
+.mogobeOrderDetails strong,.mogobeOrderDetails>b{font-size:.8rem}.mogobeOrderDetails p{margin:8px 0;font-size:.78rem;color:#51463e}
+.mogobeOrderDetails>div:last-child{display:grid;align-content:start;gap:7px}.mogobeOrderDetails>div:last-child>b{font-size:1.15rem}.mogobeOrderDetails small{font-size:.72rem;color:#65594f;line-height:1.5}
+.mogobeOrderActions{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-top:14px}
+.mogobeOrderActions label{max-width:240px;flex:1}.mogobeOrderActions>a{font-size:.78rem;font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.mogobeOrderNote{margin:8px 0}
+.mogobeCatalogueLayout{display:grid;grid-template-columns:minmax(260px,.75fr) minmax(0,1.25fr);gap:24px;align-items:start}
+.mogobeProductEditor{padding:18px;background:#f7f1e8;border:1px solid var(--ma-line)}
+.mogobeProductEditor h3{font-family:Manrope,Arial,sans-serif;font-size:1.4rem;margin:0}
+.mogobeProductEditorRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mogobeAdmin .mogobeProductEditor .mogobeAdminCheckbox{display:flex;align-items:center;gap:9px}.mogobeAdmin .mogobeProductEditor .mogobeAdminCheckbox input{width:18px;min-height:18px}
+.mogobeProductEditorActions{display:flex;gap:8px}.mogobeProductEditorActions button:first-child{flex:1}
+.mogobeInventoryTools{display:flex;align-items:end;gap:12px;margin-bottom:14px}.mogobeInventoryTools label{flex:1}
+.mogobeInventoryItem{display:flex;align-items:center;gap:12px;padding:11px;border:1px solid var(--ma-line);background:#fff}
+.mogobeInventoryItem>img{width:62px;height:62px;object-fit:cover;background:#f7f1e8}
+.mogobeInventoryItem>div:nth-child(2){display:grid;gap:5px;flex:1;min-width:0}.mogobeInventoryItem strong{font-size:.88rem}.mogobeInventoryItem span,.mogobeInventoryItem small{font-size:.72rem;color:#5e534a}
+.mogobeInventoryActions{display:flex;gap:6px}.mogobeInventoryActions button{padding:8px;font-size:.72rem}
+.mogobeAdminFooter{display:flex;justify-content:space-between;gap:16px;margin-top:26px;padding-top:18px;border-top:1px solid var(--ma-line);font-size:.76rem;color:#62574e}.mogobeAdminFooter a{font-weight:800}
+@media(max-width:760px){.mogobeAdminShell{width:min(100% - 24px,1180px);padding-top:20px}.mogobeAdminHeading,.mogobeAdminSectionTitle{align-items:start;flex-direction:column}.mogobeAdminHeading>a{margin-top:0}.mogobeAdminStats{grid-template-columns:1fr 1fr}.mogobeAdminStats article:last-child{grid-column:1/-1}.mogobeCatalogueLayout{grid-template-columns:1fr}.mogobeOrderDetails{grid-template-columns:1fr}.mogobeOrderActions{align-items:stretch;flex-direction:column}.mogobeOrderActions label{max-width:none}.mogobeInventoryTools{align-items:stretch;flex-direction:column}.mogobeInventoryItem{align-items:start;flex-wrap:wrap}.mogobeInventoryActions{margin-left:auto}.mogobeAdminFooter{flex-direction:column}.mogobeAdminAccount{padding:12px 14px}}
+@media(max-width:440px){.mogobeAdminStats{gap:8px}.mogobeAdminStats article{padding:13px}.mogobeAdminStats strong{font-size:1.9rem}.mogobeAdminTabs button{padding:9px 8px;font-size:.78rem}.mogobeOrderTop{flex-direction:column}.mogobeInventoryItem>img{width:48px;height:48px}}

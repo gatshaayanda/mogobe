@@ -1,7 +1,15 @@
 import type { MetadataRoute } from "next";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://the-plug-pearl.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export default function robots(): MetadataRoute.Robots {
-  return { rules: { userAgent: "*", allow: "/", disallow: ["/admin/"] }, sitemap: baseUrl + "/sitemap.xml", host: baseUrl };
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/admin/", "/basket", "/checkout", "/account", "/orders/", "/requests/", "/api/"]
+    },
+    sitemap: baseUrl + "/sitemap.xml",
+    host: baseUrl
+  };
 }

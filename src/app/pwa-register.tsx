@@ -1,8 +1,9 @@
 "use client";
 
-// Keep embedded-browser install enforcement explicit at the top-level PWA boundary.
+// Keep embedded-browser installation handling explicit at the top-level PWA boundary.
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { getIdToken, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase/client";
@@ -13,9 +14,7 @@ type InstallPromptEvent = Event & {
 };
 type InstallState = "hidden" | "native" | "embedded";
 
-const APP_NAME = "The Plug";
-const INSTALL_DISMISSED_KEY = "theplug:install:dismissed-at";
-const INSTALL_DISMISS_MS = 7 * 24 * 60 * 60 * 1000;
+const INSTALL_DISMISSED_KEY = "mogobe:install:dismissed-at";
 
 function environment() {
   if (typeof window === "undefined") return { standalone: true, ios: false, android: false, embedded: false };
@@ -26,26 +25,6 @@ function environment() {
   const embedded = /WhatsApp|Instagram|FBAN|FBAV|Messenger|Line\/|Twitter|TikTok|Snapchat/i.test(ua) ||
     (/Android/i.test(ua) && /; wv\)/i.test(ua));
   return { standalone, ios, android, embedded };
-}
-
-function isIosSafari() {
-  if (typeof window === "undefined") return false;
-  const nav = window.navigator;
-  const ios = /iPad|iPhone|iPod/i.test(nav.userAgent) ||
-    (nav.platform === "MacIntel" && nav.maxTouchPoints > 1);
-  return ios && /Safari/i.test(nav.userAgent) && !/CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo/i.test(nav.userAgent);
-}
-
-function dismissedRecently() {
-  try {
-    const value = window.localStorage.getItem(INSTALL_DISMISSED_KEY);
-    if (!value) return false;
-    const at = Date.parse(value);
-    if (!Number.isFinite(at)) return false;
-    return Date.now() - at < INSTALL_DISMISS_MS;
-  } catch {
-    return false;
-  }
 }
 
 function rememberDismissal() {
@@ -61,10 +40,11 @@ function clearDismissal() {
 }
 
 export default function PwaRegister({ initialEmbedded = false, initialAndroid = false }: { initialEmbedded?: boolean; initialAndroid?: boolean }) {
+  const pathname = usePathname();
   const [offline, setOffline] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
   const installPromptRef = useRef<InstallPromptEvent | null>(null);
-  const [installState, setInstallState] = useState<InstallState>(initialEmbedded ? "embedded" : "hidden");
+  const [installState, setInstallState] = useState<InstallState>("hidden");
   const [updateReady, setUpdateReady] = useState<ServiceWorker | null>(null);
   const [embeddedAndroid, setEmbeddedAndroid] = useState(initialEmbedded && initialAndroid);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
@@ -75,7 +55,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   useEffect(() => {
     setOffline(!navigator.onLine);
     const env = environment();
-    const embedded = initialEmbedded || env.embedded;
+    const embedded = false; // Browsing and checkout must remain usable inside social-app browsers; only install action may request a handoff.
     setEmbeddedAndroid((initialEmbedded && initialAndroid) || (env.embedded && env.android));
     setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
 
@@ -84,9 +64,9 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       if (!user) return;
       const idToken = await getIdToken(user).catch(() => null);
       if (!idToken) return;
-      const pendingKeys = Object.keys(localStorage).filter(key => key.startsWith("plug-pending-order-notification-"));
+      const pendingKeys = Object.keys(localStorage).filter(key => key.startsWith("mogobe-pending-order-notification-"));
       for (const key of pendingKeys) {
-        const orderId = key.replace("plug-pending-order-notification-", "");
+        const orderId = key.replace("mogobe-pending-order-notification-", "");
         try {
           const response = await fetch("/api/notifications/order-created", {
             method: "POST",
@@ -123,13 +103,13 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
 
     window.addEventListener("online", online);
     window.addEventListener("offline", off);
-    const promptWindow = window as Window & { __thePlugInstallPrompt?: Event; __thePlugPwaListenerReady?: boolean };
+    const promptWindow = window as Window & { __mogobeInstallPrompt?: Event; __mogobePwaListenerReady?: boolean };
     // The browser can emit beforeinstallprompt before React hydrates. Adopt the
     // event captured by the tiny beforeInteractive script before listening normally.
-    promptWindow.__thePlugPwaListenerReady = true;
-    const earlyPrompt = promptWindow.__thePlugInstallPrompt;
+    promptWindow.__mogobePwaListenerReady = true;
+    const earlyPrompt = promptWindow.__mogobeInstallPrompt;
     if (earlyPrompt) {
-      delete promptWindow.__thePlugInstallPrompt;
+      delete promptWindow.__mogobeInstallPrompt;
       onBeforeInstallPrompt(earlyPrompt);
     }
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
@@ -153,7 +133,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
         void install();
         return;
       }
-      // Match the working Odi install flow: never let a visible install CTA silently
+      // Never let a visible install CTA silently
       // do nothing when this browser has not emitted beforeinstallprompt.
       const platform = current.ios ? "ios" : current.android ? "android" : "other";
       setInstallPlatform(platform);
@@ -166,7 +146,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
       setInstallState("hidden");
       clearDismissal();
     };
-    window.addEventListener("theplug-open-install", requestInstall);
+    window.addEventListener("mogobe-open-install", requestInstall);
     window.addEventListener("appinstalled", appInstalled);
 
     let registration: ServiceWorkerRegistration | null = null;
@@ -195,7 +175,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     navigator.serviceWorker?.addEventListener("controllerchange", controllerChange);
 
     return () => {
-      window.removeEventListener("theplug-open-install", requestInstall);
+      window.removeEventListener("mogobe-open-install", requestInstall);
       window.removeEventListener("appinstalled", appInstalled);
       window.removeEventListener("online", online);
       window.removeEventListener("offline", off);
@@ -212,7 +192,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
     const previousOverflow = document.body.style.overflow;
     if (isEmbeddedGate) document.body.style.overflow = "hidden";
     if (installState === "embedded") embeddedActionRef.current?.focus();
-    else document.querySelector<HTMLButtonElement>(".plugInstallPrimary")?.focus();
+    else document.querySelector<HTMLButtonElement>(".mogobeInstallPrimary")?.focus();
 
     const keepDialogFocused = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -297,77 +277,81 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const embeddedInstallStyle: CSSProperties = { position: "fixed", inset: 0, zIndex: 2147483647, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "rgba(0,0,0,.82)", backdropFilter: "blur(4px)", overscrollBehavior: "contain" };
   const installCard = installState === "native" ? (
     <div style={installShellStyle} role="presentation">
-      <section className="plugInstallModal" role="dialog" aria-modal="false" aria-labelledby="plug-install-title" aria-describedby="plug-install-message">
-        <div className="plugInstallTop"><span className="plugInstallMark">P</span><span className="plugInstallTag">THE PLUG · BOTSWANA</span><button type="button" className="plugInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
-        <div className="plugInstallKicker">YOUR SOURCING APP</div>
-        <h2 id="plug-install-title">The Plug.<br/><em>One tap away.</em></h2>
-        <p id="plug-install-message">Install The Plug on your device for a direct home-screen shortcut to your sourcing requests, account and private conversations with Frank.</p>
+      <section className="mogobeInstallModal" role="dialog" aria-modal="false" aria-labelledby="mogobe-install-title" aria-describedby="mogobe-install-message">
+        <div className="mogobeInstallTop"><span className="mogobeInstallMark">M</span><span className="mogobeInstallTag">MOGOBE BUTCHERY · BOTSWANA</span><button type="button" className="mogobeInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
+        <div className="mogobeInstallKicker">YOUR BUTCHERY APP</div>
+        <h2 id="mogobe-install-title">Mogobe Butchery.<br/><em>One tap away.</em></h2>
+        <p id="mogobe-install-message">Install Mogobe Butchery on your device for a direct home-screen shortcut to your basket, orders and updates from Mogobe.</p>
         {installHelpOpen ? (
-          <div className="plugInstallSteps" role="status" aria-live="polite">
+          <div className="mogobeInstallSteps" role="status" aria-live="polite">
             {installPlatform === "ios" ? (
               <>
-                <strong>Add The Plug from Safari</strong>
+                <strong>Add Mogobe Butchery from Safari</strong>
                 <p>Open this page in <b>Safari</b>, tap <b>Share</b>, choose <b>Add to Home Screen</b>, then tap <b>Add</b>.</p>
               </>
             ) : installPlatform === "android" ? (
               <>
-                <strong>Add The Plug from Chrome</strong>
+                <strong>Add Mogobe Butchery from Chrome</strong>
                 <p>In Chrome, tap the <b>⋮ menu</b> and choose <b>Install app</b> or <b>Add to Home screen</b>. The wording depends on your Chrome version.</p>
               </>
             ) : (
               <>
-                <strong>Install The Plug from your browser</strong>
-                <p>In Chrome or Edge, open the browser menu and choose <b>Install The Plug</b> or <b>Install page as app</b>, if offered.</p>
+                <strong>Install Mogobe Butchery from your browser</strong>
+                <p>In Chrome or Edge, open the browser menu and choose <b>Install Mogobe Butchery</b> or <b>Install page as app</b>, if offered.</p>
               </>
             )}
-            <button type="button" className="plugInstallPrimary" onClick={dismissInstall}>Got it</button>
+            <button type="button" className="mogobeInstallPrimary" onClick={dismissInstall}>Got it</button>
           </div>
         ) : (
           <>
-            <div className="plugInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open The Plug from your home screen.</small></span><span><b>02</b><strong>Your requests</strong><small>Return to your sourcing journey and account.</small></span><span><b>03</b><strong>Private by account</strong><small>Keep your conversations in your member space.</small></span></div>
-            <button type="button" className="plugInstallPrimary" onClick={() => void install()}>Install The Plug →</button>
-            <button type="button" className="plugInstallSecondary" onClick={dismissInstall}>Not now</button>
+            <div className="mogobeInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open Mogobe Butchery from your home screen.</small></span><span><b>02</b><strong>Your orders</strong><small>Return to your basket and order updates.</small></span><span><b>03</b><strong>Easy to return</strong><small>Keep Mogobe close on your home screen.</small></span></div>
+            <button type="button" className="mogobeInstallPrimary" onClick={() => void install()}>Install Mogobe Butchery →</button>
+            <button type="button" className="mogobeInstallSecondary" onClick={dismissInstall}>Not now</button>
           </>
         )}
-        <p className="plugInstallFootnote">No app-store search needed. Your browser will guide the installation.</p>
+        <p className="mogobeInstallFootnote">No app-store search needed. Your browser will guide the installation.</p>
       </section>
     </div>
   ) : installState === "embedded" ? (
-    <div style={embeddedInstallStyle} role="alertdialog" aria-modal="true" aria-labelledby="plug-embedded-title" aria-describedby="plug-embedded-message">
+    <div style={embeddedInstallStyle} role="alertdialog" aria-modal="true" aria-labelledby="mogobe-embedded-title" aria-describedby="mogobe-embedded-message">
       <div className="pwaInstallInfo" style={{...installShellStyle, position: "relative", left: "auto", right: "auto", bottom: "auto", width: "100%", maxWidth: 520, margin: 0}}>
         <div>
-          <strong id="plug-embedded-title"><span aria-hidden="true">🌐 </span>OPEN THE PLUG IN YOUR BROWSER</strong>
-          <span id="plug-embedded-message">{embeddedAndroid ? <>Tap below to open The Plug in Chrome. Then open the <b>⋮ menu</b> and choose <b>Install app</b>.</> : <>The Plug opened inside another app. Use that app’s menu to open this page in your browser, then look for <b>Install app</b> in the browser menu.</>}</span>
+          <strong id="mogobe-embedded-title"><span aria-hidden="true">🌐 </span>OPEN MOGOBE BUTCHERY IN YOUR BROWSER</strong>
+          <span id="mogobe-embedded-message">{embeddedAndroid ? <>Tap below to open Mogobe Butchery in Chrome. Then open the <b>⋮ menu</b> and choose <b>Install app</b>.</> : <>Mogobe Butchery opened inside another app. Use that app’s menu to open this page in your browser, then look for <b>Install app</b> in the browser menu.</>}</span>
         </div>
         <div className="pwaInstallActions" style={{display:"flex",justifyContent:"flex-end"}}>
-          <button ref={embeddedActionRef} type="button" style={{background:"#0866FF",color:"#fff"}} onClick={openBrowser}>{embeddedAndroid ? "OPEN IN CHROME" : "OPEN IN BROWSER"}</button>
+          <button ref={embeddedActionRef} type="button" style={{background:"#922a2b",color:"#fff"}} onClick={openBrowser}>{embeddedAndroid ? "OPEN IN CHROME" : "OPEN IN BROWSER"}</button>
         </div>
       </div>
     </div>
   ) : null;
 
   return <>
-    {offline && <div className="offlineBanner" role="status" aria-live="polite"><span aria-hidden="true">⚡</span> Offline · Saved public finds may still be available on this device. Requests and account changes need a connection.</div>}
-    {!offline && reconnecting && <div className="offlineBanner reconnectingBanner" role="status" aria-live="polite"><span aria-hidden="true">↻</span> Reconnected · The Plug is syncing and checking for the latest information.</div>}
-    {!environment().standalone && installState !== "embedded" && (
+    {offline && <div className="offlineBanner" role="status" aria-live="polite"><span aria-hidden="true">⚡</span> Offline · Some catalogue content may be available on this device. Basket and checkout need a connection.</div>}
+    {!offline && reconnecting && <div className="offlineBanner reconnectingBanner" role="status" aria-live="polite"><span aria-hidden="true">↻</span> Reconnected · Mogobe Butchery is syncing and checking for the latest information.</div>}
+    {pathname === "/" && !environment().standalone && installState !== "embedded" && (
       <button
         type="button"
-        className="plugPwaInstallButton"
+        className="mogobePwaInstallButton"
         onClick={() => {
+          const env = environment();
+          if (env.embedded) {
+            setInstallState("embedded");
+            return;
+          }
           if (installPromptRef.current) {
             void install();
             return;
           }
-          const env = environment();
           setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
           setInstallHelpOpen(true);
           setInstallState("native");
         }}
       >
-        Install The Plug ↓
+        Install Mogobe Butchery ↓
       </button>
     )}
     {installCard}
-    {updateReady && <div className="pwaUpdate" role="status" aria-live="polite"><div><strong>The Plug update is ready</strong><span>Refresh when you are ready.</span></div><button type="button" className="button buttonPrimary" onClick={applyUpdate}>Refresh</button></div>}
+    {updateReady && <div className="pwaUpdate" role="status" aria-live="polite"><div><strong>Mogobe Butchery update is ready</strong><span>Refresh when you are ready.</span></div><button type="button" className="button buttonPrimary" onClick={applyUpdate}>Refresh</button></div>}
   </>;
 }

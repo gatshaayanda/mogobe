@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="104" fill="#f7f1e8"/>
+<rect x="22" y="22" width="468" height="468" rx="88" fill="#922a2b"/>
+<path d="M105 335V173h45l51 82 51-82h45v162h-44v-94l-52 77-52-77v94z" fill="#fff8ed"/>
+<path d="M333 172c-20 0-37 17-37 37v94c0 20 17 37 37 37h63v-39h-58v-90h58v-39z" fill="#d58b4e"/>
+<circle cx="398" cy="145" r="18" fill="#d58b4e"/>
+<text x="256" y="424" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="700" letter-spacing="5" fill="#fff8ed">BUTCHERY</text>
+</svg>

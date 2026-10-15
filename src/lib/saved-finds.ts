@@ -9,8 +9,8 @@ export type SavedFind = {
   savedAt: string;
 };
 
-const STORAGE_KEY = "theplug-saved-finds-v1";
-const CHANGE_EVENT = "theplug-saved-finds-changed";
+const STORAGE_KEY = "mogobe-saved-finds-v1";
+const CHANGE_EVENT = "mogobe-saved-finds-changed";
 
 export function readSavedFinds(): SavedFind[] {
   if (typeof window === "undefined") return [];

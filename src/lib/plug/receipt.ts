@@ -31,7 +31,7 @@ export function downloadReceiptPdf(order:ReceiptOrder){
   const lines:Array<[string,number]>=[];
 
   lines.push(
-    ["THE PLUG",24],
+    ["MOGOBE BUTCHERY",24],
     ["SNEAKERS & APPAREL",14],
     ["We Cook. You Enjoy!",10],
     ["",8],
@@ -69,8 +69,8 @@ export function downloadReceiptPdf(order:ReceiptOrder){
 
   lines.push(
     ["",12],
-    ["Thank you for choosing The Plug.",10],
-    ["THE PLUG",9],
+    ["Thank you for choosing Mogobe Butchery.",10],
+    ["MOGOBE BUTCHERY",9],
     ["76425849  |  76769834",9],
   );
 
@@ -97,15 +97,15 @@ export function downloadReceiptPdf(order:ReceiptOrder){
       content.push("0.043 0.4 1 rg");
     }else if(raw.startsWith("TOTAL")){
       content.push("0.043 0.4 1 rg");
-    }else if(raw==="THE PLUG"||raw==="SNEAKERS & APPAREL"){
+    }else if(raw==="MOGOBE BUTCHERY"||raw==="SNEAKERS & APPAREL"){
       content.push("0.043 0.4 1 rg");
-    }else if(raw==="We Cook. You Enjoy!"||raw==="THE PLUG"){
+    }else if(raw==="We Cook. You Enjoy!"||raw==="MOGOBE BUTCHERY"){
       content.push("0.95 0.95 0.95 rg");
     }else{
       content.push("0.043 0.043 0.047 rg");
     }
 
-    const x=first&&raw==="THE PLUG"?50:50;
+    const x=first&&raw==="MOGOBE BUTCHERY"?50:50;
     content.push("BT /F1 "+size+" Tf "+x+" "+y+" Td ("+escapePdf(raw)+") Tj ET");
     first=false;
     y-=size+9;

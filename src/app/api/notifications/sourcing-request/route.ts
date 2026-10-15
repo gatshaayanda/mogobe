@@ -7,9 +7,9 @@ import {getAuth} from "firebase-admin/auth";
 export const runtime="nodejs";
 function app(){
  const raw=process.env.FIREBASE_ADMIN_KEY;
- if(!raw)throw new Error("The Plug notifications are not configured yet.");
+ if(!raw)throw new Error("Mogobe Butchery notifications are not configured yet.");
  const existing=getApps()[0];if(existing)return existing;
- let serviceAccount:Record<string,unknown>;try{serviceAccount=JSON.parse(raw) as Record<string,unknown>}catch{throw new Error("The Plug notification credentials are not valid JSON yet.")}
+ let serviceAccount:Record<string,unknown>;try{serviceAccount=JSON.parse(raw) as Record<string,unknown>}catch{throw new Error("Mogobe Butchery notification credentials are not valid JSON yet.")}
  return initializeApp({credential:cert(serviceAccount as Parameters<typeof cert>[0])});
 }
 async function verifyUid(request:Request){
@@ -28,8 +28,8 @@ export async function POST(request:Request){
   for(const admin of admins.docs){
    const pref=(await db.collection("notificationPreferences").doc(admin.id).get()).data();if(!pref?.enabled)continue;
    const tokens=await db.collection("notificationTokens").doc(admin.id).collection("tokens").get();
-   for(const token of tokens.docs){try{await messaging.send({token:String(token.data().token),notification:{title:"New The Plug sourcing request",body:String(data.customerName??"Customer")+" · "+String(data.product??"Product")},data:{link:"/admin",requestId},webpush:{fcmOptions:{link:(process.env.NEXT_PUBLIC_BASE_URL||"https://the-plug-pearl.vercel.app")+"/admin"}}});sent++}catch{}}
+   for(const token of tokens.docs){try{await messaging.send({token:String(token.data().token),notification:{title:"New Mogobe Butchery sourcing request",body:String(data.customerName??"Customer")+" · "+String(data.product??"Product")},data:{link:"/admin",requestId},webpush:{fcmOptions:{link:(process.env.NEXT_PUBLIC_BASE_URL||"")+"/admin"}}});sent++}catch{}}
   }
   return NextResponse.json({sent});
- }catch(error){console.error("The Plug sourcing notification failed:",error);return NextResponse.json({sent:0,error:error instanceof Error?error.message:"Notification unavailable while The Plug is being built."},{status:400})}
+ }catch(error){console.error("Mogobe Butchery sourcing notification failed:",error);return NextResponse.json({sent:0,error:error instanceof Error?error.message:"Notification unavailable while Mogobe Butchery is being built."},{status:400})}
 }

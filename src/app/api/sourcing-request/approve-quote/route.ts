@@ -11,7 +11,7 @@ function adminApp(){
   if(!raw)throw new Error("Quote approval is not available right now. Please try again later.");
   let serviceAccount:Record<string,unknown>;
   try{serviceAccount=JSON.parse(raw) as Record<string,unknown>}
-  catch{throw new Error("Quote approval is not configured correctly. Please contact The Plug.");
+  catch{throw new Error("Quote approval is not configured correctly. Please contact Mogobe Butchery.");
   }
   return initializeApp({credential:cert(serviceAccount as Parameters<typeof cert>[0])});
 }
@@ -41,7 +41,7 @@ export async function POST(request:Request){
     if(result.status!==200)return NextResponse.json({error:result.error},{status:result.status});
     return NextResponse.json({approved:true,approvedAt:result.approvedAt,alreadyApproved:result.alreadyApproved});
   }catch(error){
-    console.error("The Plug quote approval failed:",error);
+    console.error("Mogobe Butchery quote approval failed:",error);
     return NextResponse.json({error:error instanceof Error?error.message:"We could not record your approval. Please try again."},{status:400});
   }
 }

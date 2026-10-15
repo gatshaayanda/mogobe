@@ -60,7 +60,7 @@ export async function POST(request:Request){
     });
     return NextResponse.json({requestId:result.id,alreadySaved:result.duplicate},{status:result.duplicate?200:201});
   }catch(error){
-    console.error("[The Plug] sourcing request save failed:",error);
+    console.error("[Mogobe Butchery] sourcing request save failed:",error);
     const message=error instanceof Error?error.message:"The request could not be saved.";
     const status=/expired|token|authentication/i.test(message)?401:400;
     return NextResponse.json({error:message},{status});

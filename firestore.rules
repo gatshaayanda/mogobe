@@ -136,6 +136,40 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    function validMogobeProduct() {
+      return request.resource.data.keys().hasOnly([
+          'name', 'category', 'description', 'price', 'unit',
+          'imageUrl', 'available', 'sortOrder', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'name', 'category', 'description', 'price', 'unit',
+          'imageUrl', 'available', 'sortOrder', 'updatedAt'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.category is string
+        && request.resource.data.category.size() > 0
+        && request.resource.data.category.size() <= 60
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 1000
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.unit in ['kg', 'pack', 'each']
+        && request.resource.data.imageUrl is string
+        && request.resource.data.imageUrl.size() <= 2000
+        && request.resource.data.available is bool
+        && request.resource.data.sortOrder is number
+        && request.resource.data.updatedAt is string
+        && (!request.resource.data.keys().hasAny(['createdAt']) || request.resource.data.createdAt is string);
+    }
+
+    match /products/{productId} {
+      allow read: if isAdmin() || resource.data.available == true;
+      allow create, update: if isAdmin() && validMogobeProduct();
+      allow delete: if isAdmin();
+    }
+
     match /menu/{itemId} {
       allow read: if true;
       allow write: if isAdmin();
