@@ -11,7 +11,8 @@
 - Inspect status, remotes, branches, source files, relevant factory documents and existing behavior before changing code. Make the smallest controlled changes and preserve working features.
 - Do not copy credentials, secrets, customer data, Firestore data, Firebase project settings, or client-specific infrastructure. Mogobe Firebase project is `mogobe-939a7`; use the owner-configured environment and do not invent keys.
 - Do not weaken authentication, Firestore/Storage rules, input validation, or access checks to make a feature work.
-- No deployment, merge, live-data mutation, production rules deployment or material cost without explicit authorization. The owner handles Vercel deployment unless asked otherwise.
+- The product owner has explicitly authorized pushing completed, verified work to `main` by default so it is available for direct QA. Do not wait for a separate push/merge instruction; the owner will explicitly tell you when to stop pushing to `main`.
+- Pushing/merging to `main` is not permission to deploy, mutate live data, deploy Firebase rules/indexes, or incur material costs. The owner handles Vercel deployment unless explicitly requested.
 - Use VS Code Git Bash commands, not PowerShell. Never force-push. Verify the target remote before pushing.
 
 ## Customer experience
