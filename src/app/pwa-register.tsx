@@ -64,7 +64,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const [offline, setOffline] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
   const installPromptRef = useRef<InstallPromptEvent | null>(null);
-  const [installState, setInstallState] = useState<InstallState>(initialEmbedded ? "embedded" : "hidden");
+  const [installState, setInstallState] = useState<InstallState>("hidden");
   const [updateReady, setUpdateReady] = useState<ServiceWorker | null>(null);
   const [embeddedAndroid, setEmbeddedAndroid] = useState(initialEmbedded && initialAndroid);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
@@ -75,7 +75,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   useEffect(() => {
     setOffline(!navigator.onLine);
     const env = environment();
-    const embedded = initialEmbedded || env.embedded;
+    const embedded = false; // Browsing and checkout must remain usable inside social-app browsers; only install action may request a handoff.
     setEmbeddedAndroid((initialEmbedded && initialAndroid) || (env.embedded && env.android));
     setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
 
