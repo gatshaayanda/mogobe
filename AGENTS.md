@@ -22,7 +22,7 @@
 - Weight-based quantities must support fractions of a kilogram. Clearly label calculated totals as estimates when final packed weight/price is unknown.
 - Checkout creates an order request in a pending/new state. Never call it accepted/confirmed until an admin explicitly accepts it. Preferred date/time is not a reservation; Mogobe must confirm it.
 - Preserve the basket after failed submissions. Never report success until Firestore confirms the write.
-- Product image uploads and full product CRUD belong in the later admin phase. Use public product reads and admin-only writes; Firebase rules, not UI hiding, enforce this.
+- Product CRUD, availability controls and order review live in `/admin`. The current editor supports image URLs; direct file upload remains pending a verified Mogobe-owned upload configuration. Use public product reads and admin-only writes; Firebase rules, not UI hiding, enforce this.
 - WhatsApp is never the required order path. Use it only as an optional support/acquisition channel.
 
 ## PWA and identity
