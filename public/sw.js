@@ -4,13 +4,13 @@ importScripts(
   "/api/firebase/messaging-sw-config"
 );
 
-let thePlugMessaging = null;
+let mogobeMessaging = null;
 try {
   const config = self.__MOGOBE_FIREBASE_CONFIG__;
   if (config && config.apiKey && config.projectId && config.messagingSenderId && config.appId) {
     firebase.initializeApp(config);
-    thePlugMessaging = firebase.messaging();
-    thePlugMessaging.onBackgroundMessage((payload) => {
+    mogobeMessaging = firebase.messaging();
+    mogobeMessaging.onBackgroundMessage((payload) => {
       // Notification payloads are displayed automatically by Firebase. Only render
       // data-only pushes here to avoid showing the same notification twice.
       if (payload.notification) return;
