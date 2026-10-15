@@ -30,7 +30,7 @@ export async function POST(request:Request){
     const result=await sendNewOrderNotifications(orderId,uid);
     return NextResponse.json(result);
   }catch(error){
-    console.error("The Plug new-order notification failed:",error);
-    return NextResponse.json({sent:0,error:error instanceof Error?error.message:"The Plug could not notify operations."},{status:400});
+    console.error("Mogobe Butchery new-order notification failed:",error);
+    return NextResponse.json({sent:0,error:error instanceof Error?error.message:"Mogobe Butchery could not notify operations."},{status:400});
   }
 }
