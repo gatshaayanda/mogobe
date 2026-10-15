@@ -1,3 +1,4 @@
 import AdminGate from "@/app/admin/admin-gate";
-import PlugAdminDashboard from "@/components/PlugAdminDashboard";
-export default function AdminPage(){return <AdminGate><PlugAdminDashboard/></AdminGate>}
+import MogobeAdminDashboard from "@/components/MogobeAdminDashboard";
+export const metadata = { title: "Mogobe Admin", robots: { index: false, follow: false } };
+export default function AdminPage() { return <AdminGate><MogobeAdminDashboard /></AdminGate>; }
