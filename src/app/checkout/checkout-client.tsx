@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
 import { auth, db, hasFirebaseWebConfig } from "@/lib/firebase/client";
 import { money, readMogobeCart, writeMogobeCart, type MogobeCartLine } from "@/lib/mogobe/catalogue";
@@ -44,7 +44,8 @@ export default function CheckoutClient() {
     }
     try {
       const user = auth.currentUser ?? (await signInAnonymously(auth)).user;
-      const id = doc(collectionRef()).id;
+      const orderRef = doc(collection(db, "orders"));
+      const id = orderRef.id;
       const createdAt = new Date().toISOString();
       const order = {
         customerId: user.uid,
@@ -59,7 +60,7 @@ export default function CheckoutClient() {
         total: Math.round(subtotal * 100) / 100,
         status: "New"
       };
-      await setDoc(doc(db, "orders", id), order);
+      await setDoc(orderRef, order);
       setReference(id);
       writeMogobeCart([]);
       setLines([]);
@@ -71,10 +72,6 @@ export default function CheckoutClient() {
     }
   }
 
-  function collectionRef() {
-    // Generate an order reference using the configured Firestore collection.
-    return doc(db, "orders");
-  }
 
   if (reference) return <main className="mogobeInnerPage"><section className="mogobeSuccess"><span className="mogobeSuccessIcon">✓</span><span className="mogobeEyebrow">REQUEST RECEIVED</span><h1>Thank you.<br/><em>We’ll confirm next.</em></h1><p>Your reference is <strong>{reference.slice(0, 8).toUpperCase()}</strong>. Mogobe will review availability, actual weight, final pricing and your preferred time.</p><div className="mogobePendingNotice"><strong>This is not yet a confirmed order.</strong><span>Please wait for Mogobe to accept the request and confirm the details.</span></div><Link href="/" className="mogobePrimaryButton">Back to the counter ↗</Link></section></main>;
 
