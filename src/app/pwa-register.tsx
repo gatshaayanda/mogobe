@@ -300,8 +300,8 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   const installCard = installState === "native" ? (
     <div style={installShellStyle} role="presentation">
       <section className="plugInstallModal" role="dialog" aria-modal="false" aria-labelledby="plug-install-title" aria-describedby="plug-install-message">
-        <div className="plugInstallTop"><span className="plugInstallMark">P</span><span className="plugInstallTag">MOGOBE BUTCHERY · BOTSWANA</span><button type="button" className="plugInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
-        <div className="plugInstallKicker">YOUR SOURCING APP</div>
+        <div className="plugInstallTop"><span className="plugInstallMark">M</span><span className="plugInstallTag">MOGOBE BUTCHERY · BOTSWANA</span><button type="button" className="plugInstallClose" aria-label="Close install prompt" onClick={dismissInstall}>×</button></div>
+        <div className="plugInstallKicker">YOUR BUTCHERY APP</div>
         <h2 id="plug-install-title">Mogobe Butchery.<br/><em>One tap away.</em></h2>
         <p id="plug-install-message">Install Mogobe Butchery on your device for a direct home-screen shortcut to your basket, orders and updates from Mogobe.</p>
         {installHelpOpen ? (
@@ -326,7 +326,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
           </div>
         ) : (
           <>
-            <div className="plugInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open Mogobe Butchery from your home screen.</small></span><span><b>02</b><strong>Your requests</strong><small>Return to your sourcing journey and account.</small></span><span><b>03</b><strong>Private by account</strong><small>Keep your conversations in your member space.</small></span></div>
+            <div className="plugInstallModalBenefits"><span><b>01</b><strong>Quick access</strong><small>Open Mogobe Butchery from your home screen.</small></span><span><b>02</b><strong>Your orders</strong><small>Return to your basket and order updates.</small></span><span><b>03</b><strong>Easy to return</strong><small>Keep Mogobe close on your home screen.</small></span></div>
             <button type="button" className="plugInstallPrimary" onClick={() => void install()}>Install Mogobe Butchery →</button>
             <button type="button" className="plugInstallSecondary" onClick={dismissInstall}>Not now</button>
           </>
@@ -356,11 +356,15 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
         type="button"
         className="plugPwaInstallButton"
         onClick={() => {
+          const env = environment();
+          if (env.embedded) {
+            setInstallState("embedded");
+            return;
+          }
           if (installPromptRef.current) {
             void install();
             return;
           }
-          const env = environment();
           setInstallPlatform(env.ios ? "ios" : env.android ? "android" : "other");
           setInstallHelpOpen(true);
           setInstallState("native");
