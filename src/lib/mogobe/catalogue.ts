@@ -13,6 +13,10 @@ export type MogobeProduct = {
   imageUrl: string;
   available: boolean;
   sortOrder: number;
+  specialPrice?: number;
+  specialLabel?: string;
+  specialStartsAt?: string;
+  specialEndsAt?: string;
 };
 
 export type MogobeCartLine = {
@@ -53,7 +57,11 @@ export async function getMogobeProducts(): Promise<MogobeProduct[]> {
           unit: data.unit === "pack" || data.unit === "each" ? data.unit : "kg",
           imageUrl: String(data.imageUrl ?? "/mogobe-meat-placeholder.svg"),
           available: data.available === true,
-          sortOrder: Number(data.sortOrder ?? 999)
+          sortOrder: Number(data.sortOrder ?? 999),
+          ...(typeof data.specialPrice === "number" ? { specialPrice: data.specialPrice } : {}),
+          ...(typeof data.specialLabel === "string" ? { specialLabel: data.specialLabel } : {}),
+          ...(typeof data.specialStartsAt === "string" ? { specialStartsAt: data.specialStartsAt } : {}),
+          ...(typeof data.specialEndsAt === "string" ? { specialEndsAt: data.specialEndsAt } : {})
         } satisfies MogobeProduct;
       }).sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
     }
@@ -85,6 +93,17 @@ export function writeMogobeCart(lines: MogobeCartLine[]) {
   } catch {
     // Keep the storefront usable if local storage is unavailable.
   }
+}
+
+export function isProductSpecialActive(product: MogobeProduct, now = Date.now()) {
+  if (typeof product.specialPrice !== "number" || product.specialPrice < 0 || product.specialPrice >= product.price) return false;
+  const starts = product.specialStartsAt ? new Date(product.specialStartsAt).getTime() : Number.NEGATIVE_INFINITY;
+  const ends = product.specialEndsAt ? new Date(product.specialEndsAt).getTime() : Number.POSITIVE_INFINITY;
+  return starts <= now && ends >= now;
+}
+
+export function currentProductPrice(product: MogobeProduct, now = Date.now()) {
+  return isProductSpecialActive(product, now) ? product.specialPrice as number : product.price;
 }
 
 export function money(value: number) {
