@@ -17,6 +17,7 @@
 .mogobeAdmin button{min-height:42px;padding:10px 14px;border:1px solid var(--ma-red);border-radius:4px;background:var(--ma-red);color:white;font-weight:800;cursor:pointer}
 .mogobeAdmin button:disabled{opacity:.6;cursor:wait}
 .mogobeAdmin button.secondary{background:transparent;color:var(--ma-ink);border-color:var(--ma-line)}
+.mogobeAdmin button.danger{background:#fff1ed;color:#852a26;border-color:#d6a19b}
 .mogobeAdminError,.mogobeAdminNotice{padding:12px 14px;border-left:4px solid var(--ma-red);background:#fff1ed;color:#672020;font-size:.86rem}
 .mogobeAdminNotice{border-color:#41744c;background:#eff8ee;color:#24542e}
 .mogobeAdminHint{font-size:.76rem;line-height:1.55;color:#65594f}
