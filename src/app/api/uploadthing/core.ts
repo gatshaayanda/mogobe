@@ -1,4 +1,4 @@
-import { cert, getApp, getApps, initializeApp } from "firebase-admin/app";
+import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { UploadThingError } from "uploadthing/server";
