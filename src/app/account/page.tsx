@@ -6,6 +6,7 @@ import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db, hasFirebaseWebConfig } from "@/lib/firebase/client";
 import { getCustomerProfile, saveCustomerProfile, subscribeToCustomerOrders, type CustomerProfile, type FoodOrder } from "@/lib/firebase/data";
+import { readMogobeCart, writeMogobeCart, type MogobeCartLine } from "@/lib/mogobe/catalogue";
 
 type Membership = { uid: string; points: number; tier: string; createdAt: string; updatedAt: string };
 
@@ -71,6 +72,25 @@ export default function AccountPage() {
     }
   }
 
+  function reorder(order: FoodOrder) {
+    const cart = readMogobeCart();
+    let added = 0;
+    for (const item of order.items) {
+      if (!item.productId) continue;
+      const unit = item.unit === "pack" || item.unit === "each" ? item.unit : "kg";
+      const line: MogobeCartLine = { productId: item.productId, name: item.name, category: item.category || "Meat", price: item.price, unit, imageUrl: item.imageUrl || "/mogobe-meat-placeholder.svg", quantity: item.quantity };
+      const existing = cart.find(entry => entry.productId === line.productId);
+      if (existing) {
+        const merged = { ...existing, quantity: existing.quantity + line.quantity };
+        cart.splice(cart.indexOf(existing), 1, merged);
+      } else cart.push(line);
+      added++;
+    }
+    if (!added) { setMessage("This older order has no product references for one-tap reorder. Browse the current catalogue instead."); return; }
+    writeMogobeCart(cart);
+    window.location.href = "/basket";
+  }
+
   async function saveProfile(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user) { setMessage("Open your account session before saving details."); return; }
@@ -92,7 +112,7 @@ export default function AccountPage() {
       {loading ? <p className="feedEmpty">Loading your Mogobe account…</p> : user ? <>
         <section className="accountSection"><div className="panelHeading"><div><span className="kicker">LOYALTY</span><h2>{membership?.points ?? 0} points</h2></div><span className="accountStatus">{membership?.tier ?? "Member"}</span></div><p className="orderTruth">Your balance reflects points recorded by Mogobe. Points are not a cash balance; any redemption offer will be shown here when the programme terms are published.</p></section>
         <section className="accountSection"><div className="panelHeading"><div><span className="kicker">ORDER HISTORY · {orders.length}</span><h2>Orders to keep track of.</h2></div><Link className="button buttonPrimary" href="/#shop">Shop again</Link></div>
-          {orders.length === 0 ? <article className="feedEmpty"><strong>Your first order starts here.</strong><p>When you submit a request, it will appear here with its reference and current status.</p><Link className="button buttonPrimary" href="/#shop">Browse the butchery →</Link></article> : <div className="feedList">{orders.map(order => <article className="feedItem" key={order.id}><div className="panelHeading"><div><span className="kicker">ORDER · {order.id.slice(0, 8).toUpperCase()}</span><h3>{order.mode === "delivery" ? "Delivery request" : "Collection request"}</h3></div><span className="accountStatus">{order.status || "New"}</span></div><p>{order.items.map(item => item.name + " × " + item.quantity).join(" · ")}</p><p className="orderTruth">Estimated basket: P{Number(order.total ?? 0).toFixed(2)} · {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Date unavailable"}</p><p className="orderTruth">The request is not confirmed until Mogobe accepts it. Final packed weight, availability and price may change.</p><Link className="button buttonLight" href={"/orders/" + encodeURIComponent(order.id)}>Track this request →</Link></article>)}</div>}
+          {orders.length === 0 ? <article className="feedEmpty"><strong>Your first order starts here.</strong><p>When you submit a request, it will appear here with its reference and current status.</p><Link className="button buttonPrimary" href="/#shop">Browse the butchery →</Link></article> : <div className="feedList">{orders.map(order => <article className="feedItem" key={order.id}><div className="panelHeading"><div><span className="kicker">ORDER · {order.id.slice(0, 8).toUpperCase()}</span><h3>{order.mode === "delivery" ? "Delivery request" : "Collection request"}</h3></div><span className="accountStatus">{order.status || "New"}</span></div><p>{order.items.map(item => item.name + " × " + item.quantity).join(" · ")}</p><p className="orderTruth">Estimated basket: P{Number(order.total ?? 0).toFixed(2)} · {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Date unavailable"}</p><p className="orderTruth">The request is not confirmed until Mogobe accepts it. Final packed weight, availability and price may change.</p><div className="mogobeOrderActions"><Link className="button buttonLight" href={"/orders/" + encodeURIComponent(order.id)}>Track this request →</Link>{order.items.some(item=>Boolean(item.productId))&&<button type="button" className="button buttonPrimary" onClick={()=>reorder(order)}>Buy these cuts again ↗</button>}</div></article>)}</div>}
         </section>
         <section className="accountSection" id="profile"><div className="panelHeading"><div><span className="kicker">YOUR DETAILS</span><h2>Faster next time.</h2></div></div><form className="adminForm" onSubmit={saveProfile}><label>Name<input required maxLength={100} value={draft.name} onChange={e=>setDraft(v=>({...v,name:e.target.value}))}/></label><label>Phone / WhatsApp<input required maxLength={40} value={draft.phone} onChange={e=>setDraft(v=>({...v,phone:e.target.value}))}/></label><label>Preferred delivery location<input maxLength={300} value={draft.preferredDeliveryLocation} onChange={e=>setDraft(v=>({...v,preferredDeliveryLocation:e.target.value}))}/></label><label>Order notes (optional)<textarea maxLength={500} rows={3} value={draft.notes} onChange={e=>setDraft(v=>({...v,notes:e.target.value}))}/></label><button className="button buttonPrimary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save my details"}</button></form></section>
         <section className="accountSection"><div className="panelHeading"><div><span className="kicker">COMMUNITY</span><h2>Share a recipe or braai idea.</h2></div></div><p>Help other customers choose cuts, learn cooking tips and discover ideas from the Mogobe community. Posts are reviewed before they appear publicly.</p><Link className="button buttonPrimary" href="/community">Visit the community →</Link></section>
