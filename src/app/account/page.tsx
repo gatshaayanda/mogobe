@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { GoogleAuthProvider, linkWithPopup, onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
-import { collection, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db, hasFirebaseWebConfig } from "@/lib/firebase/client";
 import { getCustomerProfile, saveCustomerProfile, subscribeToCustomerOrders, type CustomerProfile, type FoodOrder } from "@/lib/firebase/data";
