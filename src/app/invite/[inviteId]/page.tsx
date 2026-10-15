@@ -1,3 +1,2 @@
-import InviteAcceptance from "./InviteAcceptance";
-export const metadata={title:"Friend invitation",description:"Accept a friend invitation on Mogobe Butchery."};
-export default async function InvitePage({params}:{params:Promise<{inviteId:string}>}){const {inviteId}=await params;return <InviteAcceptance inviteId={inviteId}/>;}
+import { redirect } from "next/navigation";
+export default function LegacyInvitePage(){ redirect("/account"); }
