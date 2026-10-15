@@ -1,6 +1,6 @@
 "use client";
 
-// Keep embedded-browser install enforcement explicit at the top-level PWA boundary.
+// Keep embedded-browser installation handling explicit at the top-level PWA boundary.
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
