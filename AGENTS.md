@@ -26,7 +26,7 @@
 - WhatsApp is never the required order path. Use it only as an optional support/acquisition channel.
 
 ## PWA and identity
-- Preserve The Plug's verified native Android `beforeinstallprompt` flow and direct-click behavior. Do not replace it with manual-instructions-only guidance. iOS/Safari limitations must be described honestly.
+- Preserve the foundation's verified native Android `beforeinstallprompt` flow and direct-click behavior. Do not replace it with manual-instructions-only guidance. iOS/Safari limitations must be described honestly.
 - One install state machine; no install prompt loops, fake installation, JavaScript alerts, or stacked dialogs. Respect standalone state and user dismissal.
 - All customer-facing app name, metadata, manifest, icons, cache prefixes, notification copy and service-worker paths must use Mogobe identity. Do not leave The Plug, BOEMO, Padre Pio or another client's branding/configuration in the finished app.
 - Never broadly cache private basket/checkout/order/account/admin content or treat offline writes as confirmed.
