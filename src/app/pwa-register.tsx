@@ -3,6 +3,7 @@
 // Keep embedded-browser install enforcement explicit at the top-level PWA boundary.
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { getIdToken, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase/client";
@@ -61,6 +62,7 @@ function clearDismissal() {
 }
 
 export default function PwaRegister({ initialEmbedded = false, initialAndroid = false }: { initialEmbedded?: boolean; initialAndroid?: boolean }) {
+  const pathname = usePathname();
   const [offline, setOffline] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
   const installPromptRef = useRef<InstallPromptEvent | null>(null);
@@ -340,7 +342,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
           <span id="plug-embedded-message">{embeddedAndroid ? <>Tap below to open Mogobe Butchery in Chrome. Then open the <b>⋮ menu</b> and choose <b>Install app</b>.</> : <>Mogobe Butchery opened inside another app. Use that app’s menu to open this page in your browser, then look for <b>Install app</b> in the browser menu.</>}</span>
         </div>
         <div className="pwaInstallActions" style={{display:"flex",justifyContent:"flex-end"}}>
-          <button ref={embeddedActionRef} type="button" style={{background:"#0866FF",color:"#fff"}} onClick={openBrowser}>{embeddedAndroid ? "OPEN IN CHROME" : "OPEN IN BROWSER"}</button>
+          <button ref={embeddedActionRef} type="button" style={{background:"#922a2b",color:"#fff"}} onClick={openBrowser}>{embeddedAndroid ? "OPEN IN CHROME" : "OPEN IN BROWSER"}</button>
         </div>
       </div>
     </div>
@@ -349,7 +351,7 @@ export default function PwaRegister({ initialEmbedded = false, initialAndroid = 
   return <>
     {offline && <div className="offlineBanner" role="status" aria-live="polite"><span aria-hidden="true">⚡</span> Offline · Some catalogue content may be available on this device. Basket and checkout need a connection.</div>}
     {!offline && reconnecting && <div className="offlineBanner reconnectingBanner" role="status" aria-live="polite"><span aria-hidden="true">↻</span> Reconnected · Mogobe Butchery is syncing and checking for the latest information.</div>}
-    {!environment().standalone && installState !== "embedded" && (
+    {pathname === "/" && !environment().standalone && installState !== "embedded" && (
       <button
         type="button"
         className="plugPwaInstallButton"
