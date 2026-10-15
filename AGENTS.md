@@ -22,7 +22,10 @@
 - Weight-based quantities must support fractions of a kilogram. Clearly label calculated totals as estimates when final packed weight/price is unknown.
 - Checkout creates an order request in a pending/new state. Never call it accepted/confirmed until an admin explicitly accepts it. Preferred date/time is not a reservation; Mogobe must confirm it.
 - Preserve the basket after failed submissions. Never report success until Firestore confirms the write.
-- Product CRUD, availability controls and order review live in `/admin`. The current editor supports image URLs; direct file upload remains pending a verified Mogobe-owned upload configuration. Use public product reads and admin-only writes; Firebase rules, not UI hiding, enforce this.
+- Product CRUD, availability controls, scheduled specials, order review, community moderation and manual loyalty credits live in `/admin`. Product images can be uploaded through the staff-authenticated UploadThing endpoint or supplied by URL. Live uploads still require Mogobe's own UploadThing and Firebase Admin environment configuration to be present and tested. Use public product reads and admin-only writes; Firebase rules, not UI hiding, enforce this.
+- Customer accounts centre on order history, saved customer details and recorded loyalty points. Only award points after collection/delivery, and prevent duplicate credit per order. Redemption terms remain owner-controlled and must not be invented.
+- Community contributions are private while pending and only become public after staff moderation. Treat recipes and tips as community content, not verified food-safety advice.
+- Product specials are optional, owner-controlled, time-windowed, and only shown at their special price during the configured window; normal prices remain intact.
 - WhatsApp is never the required order path. Use it only as an optional support/acquisition channel.
 
 ## PWA and identity
