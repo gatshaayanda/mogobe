@@ -73,6 +73,7 @@ export async function getMogobeProducts(): Promise<MogobeProduct[]> {
 
 export async function getLiveMogobeProducts(): Promise<MogobeProduct[]> {
   const snapshot = await getDocs(query(collection(db, "products"), where("available", "==", true)));
+  if (!snapshot.docs.length) return SEED_PRODUCTS;
   return snapshot.docs.map((item) => {
     const data = item.data();
     return {
