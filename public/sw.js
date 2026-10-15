@@ -50,7 +50,7 @@ const MEDIA_CACHE = "mogobe-media-v1";
 const SHELL_CACHE = CACHE_VERSION;
 const STATIC_LIMIT = 100;
 const PUBLIC_PAGE_LIMIT = 12;
-const APP_SHELL = ["/", "/basket", "/checkout", "/offline", "/mogobe-icon.svg", "/manifest.webmanifest"];
+const APP_SHELL = ["/", "/offline", "/mogobe-icon.svg", "/manifest.webmanifest"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
