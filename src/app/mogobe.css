@@ -149,3 +149,410 @@
 @media(max-width:640px){.mogobeLoyaltyAward>div{align-items:stretch;flex-direction:column}.mogobeLoyaltyAward label,.mogobeLoyaltyAward button{width:100%}}
 
 .mogobeQueueTools{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(180px,.7fr);gap:12px;margin:18px 0}.mogobeQueueTools label{display:grid;gap:7px;color:#51463d;font-size:.76rem;font-weight:800}.mogobeQueueTools input,.mogobeQueueTools select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #c8b8a6;background:#fff;color:#241d19;font:inherit;font-size:.84rem}.mogobeQueueTools input:focus-visible,.mogobeQueueTools select:focus-visible{outline:3px solid #c77b4e;outline-offset:2px}@media(max-width:600px){.mogobeQueueTools{grid-template-columns:1fr}}
+
+
+/* Responsive storefront hardening adapted to Mogobe's existing components. */
+.mogobeStore,
+.mogobeInnerPage,
+.mogobeAdmin {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+}
+.mogobeStore *,
+.mogobeInnerPage *,
+.mogobeAdmin * {
+  box-sizing: border-box;
+}
+.mogobeStore img,
+.mogobeStore video,
+.mogobeStore svg,
+.mogobeInnerPage img,
+.mogobeInnerPage video,
+.mogobeInnerPage svg,
+.mogobeAdmin img,
+.mogobeAdmin video,
+.mogobeAdmin svg {
+  display: block;
+  max-width: 100%;
+}
+.mogobeStore .mogobeHeader,
+.mogobeStore .mogobeTopline,
+.mogobeStore .mogobeHero,
+.mogobeStore .mogobeShopSection,
+.mogobeStore .mogobeHowSection,
+.mogobeStore .mogobeFooter,
+.mogobeInnerPage > *,
+.mogobeAdmin .mogobeAdminShell {
+  min-width: 0;
+  max-width: 100%;
+}
+.mogobeStore .mogobeHeader > *,
+.mogobeStore .mogobeHeader nav,
+.mogobeStore .mogobeHeroCopy,
+.mogobeStore .mogobeSectionIntro > *,
+.mogobeStore .mogobeShopTools > *,
+.mogobeStore .mogobeProductCardBody,
+.mogobeStore .mogobeProductTitleRow,
+.mogobeStore .mogobeProductControls,
+.mogobeStore .mogobeFooter > *,
+.mogobeInnerPage .mogobeBasketRow > *,
+.mogobeInnerPage .mogobeBasketItem,
+.mogobeAdmin .mogobeAdminSection,
+.mogobeAdmin .mogobeInventoryItem > * {
+  min-width: 0;
+}
+.mogobeStore p,
+.mogobeStore h1,
+.mogobeStore h2,
+.mogobeStore h3,
+.mogobeStore small,
+.mogobeInnerPage p,
+.mogobeInnerPage h1,
+.mogobeInnerPage h2,
+.mogobeInnerPage h3,
+.mogobeAdmin p,
+.mogobeAdmin h1,
+.mogobeAdmin h2,
+.mogobeAdmin h3,
+.mogobeAdmin small {
+  overflow-wrap: anywhere;
+}
+.mogobeStore a:focus-visible,
+.mogobeInnerPage a:focus-visible,
+.mogobeAdmin a:focus-visible,
+.mogobeStore button:focus-visible,
+.mogobeInnerPage button:focus-visible,
+.mogobeAdmin button:focus-visible,
+.mogobeAdmin input:focus-visible,
+.mogobeAdmin select:focus-visible,
+.mogobeAdmin textarea:focus-visible {
+  outline: 3px solid #d58b4e;
+  outline-offset: 3px;
+}
+.mogobeStore button,
+.mogobeInnerPage button,
+.mogobeAdmin button,
+.mogobeInnerPage select {
+  touch-action: manipulation;
+}
+.mogobeStore .mogobeProductTitleRow > strong {
+  max-width: 48%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.mogobeStore .mogobeProductTitleRow > strong del {
+  display: block;
+  color: #76695e;
+  font-size: .7rem;
+}
+.mogobeStore .mogobeProductControls label {
+  flex: 0 1 auto;
+}
+.mogobeStore .mogobeProductControls select {
+  width: 100%;
+  min-width: 0;
+}
+.mogobeStore .mogobeAddButton {
+  min-width: 0;
+}
+.mogobeInnerPage .mogobeBasketRow {
+  min-width: 0;
+}
+.mogobeInnerPage .mogobeBasketLineTotal {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.mogobeInnerPage .mogobeBasketItem select,
+.mogobeInnerPage input,
+.mogobeInnerPage textarea,
+.mogobeInnerPage select {
+  max-width: 100%;
+}
+.mogobeAdmin .mogobeAdminTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mogobeAdmin .mogobeAdminStats,
+.mogobeAdmin .mogobeAdminSection,
+.mogobeAdmin .mogobeProductEditorRow,
+.mogobeAdmin .mogobeInventoryItem {
+  min-width: 0;
+}
+.mogobeAdmin .mogobeInventoryItem {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.mogobeAdmin .mogobeInventoryItem img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+.mogobeAdmin .mogobeInventoryItem > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.mogobeAdmin .mogobeInventoryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.mogobeAdmin .mogobeInventoryActions button {
+  min-height: 40px;
+}
+.mogobeAdmin input,
+.mogobeAdmin select,
+.mogobeAdmin textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.mogobeAdmin .mogobeAdminFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 1050px) {
+  .mogobeStore .mogobeHeader {
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .mogobeStore .mogobeHeader nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+  .mogobeStore .mogobeProductGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .mogobeAdmin .mogobeInventoryItem {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+  .mogobeAdmin .mogobeInventoryItem img {
+    width: 56px;
+    height: 56px;
+  }
+  .mogobeAdmin .mogobeInventoryActions {
+    grid-column: 2;
+  }
+}
+@media (max-width: 760px) {
+  .mogobeStore .mogobeTopline {
+    padding: 9px 16px;
+    gap: 6px 14px;
+    flex-wrap: wrap;
+    font-size: .59rem;
+    letter-spacing: .07em;
+  }
+  .mogobeStore .mogobeHeader {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+  .mogobeStore .mogobeHeader nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 3px 1px 7px;
+    scrollbar-width: thin;
+  }
+  .mogobeStore .mogobeHeader nav a {
+    flex: 0 0 auto;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .mogobeStore .mogobeBasketLink {
+    flex: 0 0 auto;
+    padding: 9px 12px;
+  }
+  .mogobeStore .mogobeHero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding: 42px 18px 52px;
+  }
+  .mogobeStore .mogobeHero h1 {
+    font-size: clamp(3rem, 12vw, 5.6rem);
+    line-height: .98;
+    overflow-wrap: normal;
+  }
+  .mogobeStore .mogobeHeroImage {
+    width: calc(100% - 12px);
+    margin: 0 auto;
+    transform: none;
+  }
+  .mogobeStore .mogobeImageStamp {
+    right: -6px;
+  }
+  .mogobeStore .mogobeShopSection,
+  .mogobeStore .mogobeHowSection {
+    padding: 48px 18px 58px;
+  }
+  .mogobeStore .mogobeSectionIntro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .mogobeStore .mogobeSectionIntro h2 {
+    font-size: clamp(2.3rem, 9vw, 3.6rem);
+  }
+  .mogobeStore .mogobeShopTools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .mogobeStore .mogobeSearch {
+    width: 100%;
+    min-width: 0;
+  }
+  .mogobeStore .mogobeCategoryTabs {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 2px 1px 8px;
+    scrollbar-width: thin;
+  }
+  .mogobeStore .mogobeCategoryTabs button {
+    flex: 0 0 auto;
+    min-height: 42px;
+  }
+  .mogobeStore .mogobeProductGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .mogobeStore .mogobeProductCardBody {
+    padding: 12px;
+  }
+  .mogobeStore .mogobeProductTitleRow {
+    flex-direction: column;
+    gap: 7px;
+  }
+  .mogobeStore .mogobeProductTitleRow > strong {
+    max-width: 100%;
+    text-align: left;
+  }
+  .mogobeStore .mogobeProductControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .mogobeStore .mogobeProductControls select {
+    max-width: none;
+  }
+  .mogobeStore .mogobeAddButton {
+    width: 100%;
+    min-height: 44px;
+  }
+  .mogobeStore .mogobeHowGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mogobeStore .mogobeFooter {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 26px 18px;
+  }
+  .mogobeStore .mogobeFooter > small {
+    white-space: normal;
+  }
+  .mogobeInnerPage .mogobeBasketRow {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+  .mogobeInnerPage .mogobeBasketRow > img {
+    width: 76px;
+    grid-row: span 2;
+  }
+  .mogobeInnerPage .mogobeBasketRow > :last-child {
+    grid-column: 2;
+  }
+  .mogobeInnerPage .mogobeInnerHeader h1 {
+    font-size: clamp(2.4rem, 10vw, 4rem);
+  }
+  .mogobeAdmin .mogobeAdminShell {
+    padding-inline: 16px;
+  }
+  .mogobeAdmin .mogobeAdminStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .mogobeStore .mogobeHeader {
+    padding-inline: 12px;
+  }
+  .mogobeStore .mogobeWordmark {
+    gap: 7px;
+  }
+  .mogobeStore .mogobeBrandIcon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+  .mogobeStore .mogobeWordmark strong {
+    font-size: .94rem;
+  }
+  .mogobeStore .mogobeWordmark small {
+    font-size: .49rem;
+    letter-spacing: .06em;
+  }
+  .mogobeStore .mogobeBasketLink {
+    gap: 6px;
+    padding: 8px 10px;
+    font-size: .75rem;
+  }
+  .mogobeStore .mogobeHero,
+  .mogobeStore .mogobeShopSection,
+  .mogobeStore .mogobeHowSection {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .mogobeStore .mogobeProductGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mogobeStore .mogobeProductImage img {
+    aspect-ratio: 1.55;
+  }
+  .mogobeInnerPage {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .mogobeInnerPage .mogobeBasketRow {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px;
+  }
+  .mogobeInnerPage .mogobeBasketRow > img {
+    width: 64px;
+  }
+  .mogobeAdmin .mogobeAdminStats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mogobeAdmin .mogobeInventoryItem {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 9px;
+  }
+  .mogobeAdmin .mogobeInventoryItem img {
+    width: 44px;
+    height: 44px;
+  }
+  .mogobeAdmin .mogobeInventoryActions {
+    grid-column: 1 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mogobeStore *,
+  .mogobeStore *::before,
+  .mogobeStore *::after,
+  .mogobeInnerPage *,
+  .mogobeAdmin * {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
